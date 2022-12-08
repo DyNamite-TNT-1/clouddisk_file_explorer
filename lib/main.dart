@@ -101,11 +101,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             onChanged: (value) {},
                             decoration: const InputDecoration(
-                              label: Text(
-                                "Domain",
-                              ),
+                              labelText: "Domain",
+
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
-                              contentPadding: const EdgeInsets.only(top: 14),
+                              contentPadding: const EdgeInsets.only(top: -14),
                               // prefixIcon: const Icon(
                               //   Icons.language,
                               //   size: 16,
