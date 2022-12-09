@@ -8,7 +8,6 @@ class ListItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return ListView.builder(
       itemCount: items.length,
       itemBuilder: (context, index) => ItemFile(
@@ -19,7 +18,6 @@ class ListItems extends StatelessWidget {
           //     LoadEvent(items[index].id),
           //   );
           // }
-          print("Click folder");
         },
       ),
     );

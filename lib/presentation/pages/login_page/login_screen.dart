@@ -1,5 +1,7 @@
+import 'package:clouddisk_login_form/api/auth.dart';
 import 'package:clouddisk_login_form/components/auth_button.dart';
 import 'package:clouddisk_login_form/components/auth_input.dart';
+import 'package:clouddisk_login_form/models/login.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController domainController = TextEditingController();
   TextEditingController idController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  AuthApi api = AuthApi();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -86,14 +89,14 @@ class _LoginScreenState extends State<LoginScreen> {
               AuthButton(
                 label: "Log In",
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: ((context) {
-                        return const HomePage();
-                      }),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: ((context) {
+                  //       return const HomePage();
+                  //     }),
+                  //   ),
+                  // );
                 },
               ),
             ],
