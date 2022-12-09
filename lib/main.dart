@@ -3,7 +3,7 @@ import 'package:clouddisk_login_form/presentation/pages/login_page/login_screen.
 import 'package:flutter/material.dart';
 
 void main() {
-  originalFolders();
+  fakeData();
   runApp(const MyApp());
 }
 

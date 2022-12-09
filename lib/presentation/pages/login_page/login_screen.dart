@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 isPassword: true,
               ),
               AuthButton(
-                label: "Log in",
+                label: "Log In",
                 onTap: () {
                   Navigator.push(
                     context,

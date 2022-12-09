@@ -72,25 +72,6 @@ class _AuthInputState extends State<AuthInput> {
                         },
                       )
                     : null,
-                // prefixIcon: const Icon(
-                //   Icons.language,
-                //   size: 16,
-                //   color: Colors.black45,
-                // ),
-                // enabledBorder: UnderlineInputBorder(
-                //   borderRadius: BorderRadius.circular(4),
-                //   borderSide: const BorderSide(
-                //     // color: inputBackgroundColor,
-                //     width: 1.6,
-                //   ),
-                // ),
-                // focusedBorder: UnderlineInputBorder(
-                //   borderRadius: BorderRadius.circular(4),
-                //   borderSide: const BorderSide(
-                //     // color: themeColor,
-                //     width: 1.6,
-                //   ),
-                // ),
               ),
             ),
           ),

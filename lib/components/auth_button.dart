@@ -41,7 +41,6 @@ class _AuthButtonState extends State<AuthButton> {
           padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             widget.label,
