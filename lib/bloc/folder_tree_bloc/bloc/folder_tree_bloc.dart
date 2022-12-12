@@ -1,6 +1,8 @@
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
-import 'package:clouddisk_login_form/models/item.dart';
 import 'package:equatable/equatable.dart';
+
+import 'package:clouddisk_login_form/models/item.dart';
 
 part 'folder_tree_event.dart';
 part 'folder_tree_state.dart';

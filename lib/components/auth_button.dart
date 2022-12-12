@@ -18,7 +18,7 @@ class _AuthButtonState extends State<AuthButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 56, left: 32, right: 32),
+      padding: const EdgeInsets.symmetric(horizontal: 32),
       width: double.infinity,
       child: InkWell(
         onTap: () {
