@@ -31,6 +31,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future pushDialog() {
+      return showDialog(
+          context: context,
+          barrierColor: Colors.transparent,
+          builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 32),
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: Colors.green.shade900,
+                ),
+              ),
+            );
+          });
+    }
+
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccessLoaded) {
@@ -41,7 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.error)));
         }
-        if (state is LoginLoading) {}
+        if (state is LoginLoading) {
+          pushDialog();
+        }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
