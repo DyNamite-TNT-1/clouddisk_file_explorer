@@ -1,6 +1,8 @@
+import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/components/item_file.dart';
 import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ListItems extends StatefulWidget {
@@ -18,7 +20,6 @@ class _ListItemsState extends State<ListItems> {
   void onRefresh() async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
     refreshController.refreshCompleted();
   }
 
@@ -48,19 +49,29 @@ class _ListItemsState extends State<ListItems> {
         }),
       ),
       onRefresh: onRefresh,
-      child: ListView.builder(
-        itemCount: widget.items.length,
-        itemBuilder: (context, index) => ItemFile(
-          item: widget.items[index],
-          onPressed: () {
-            // if (items[index] is Folder) {
-            //   BlocProvider.of<FolderRootBloc>(context).add(
-            //     LoadEvent(items[index].id),
-            //   );
-            // }
-          },
-        ),
-      ),
+      child: (widget.items.isNotEmpty)
+          ? ListView.builder(
+              itemCount: widget.items.length,
+              itemBuilder: (context, index) => ItemFile(
+                item: widget.items[index],
+                onPressed: () {
+                  if (widget.items[index] is Folder) {
+                    BlocProvider.of<FolderTreeBloc>(context).add(
+                      LoadEvent(widget.items[index].id),
+                    );
+                  }
+                },
+              ),
+            )
+          : const Center(
+              child: Text(
+                "No Data",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
     );
   }
 }

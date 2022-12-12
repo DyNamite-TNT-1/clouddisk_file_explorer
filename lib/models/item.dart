@@ -83,5 +83,5 @@ void fakeData() {
     folders[10],
   ]);
   folders[1].updateIconandColor(folders[1].children);
-  folders[3].updateIconandColor(folders[1].children);
+  folders[3].updateIconandColor(folders[3].children);
 }

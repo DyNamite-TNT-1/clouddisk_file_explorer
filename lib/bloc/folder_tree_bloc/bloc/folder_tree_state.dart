@@ -11,10 +11,10 @@ class FolderTreeInitial extends FolderTreeState {}
 
 class FolderTreeLoading extends FolderTreeState {}
 
-class FolderRootLoaded extends FolderTreeState {
+class FolderTreeLoaded extends FolderTreeState {
   final List<Item> items;
 
-  const FolderRootLoaded(this.items);
+  const FolderTreeLoaded(this.items);
 
   @override
   List<Object> get props => [items];
