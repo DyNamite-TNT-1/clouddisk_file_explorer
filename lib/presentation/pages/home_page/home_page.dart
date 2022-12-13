@@ -1,4 +1,6 @@
 import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
+import 'package:clouddisk_login_form/components/item_leading.dart';
+import 'package:clouddisk_login_form/presentation/pages/login_page/login_screen.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -105,23 +107,66 @@ class _HomePageState extends State<HomePage> {
             children: [
               DrawerHeader(
                 padding: const EdgeInsets.all(0),
-                margin: const EdgeInsets.only(bottom: 0),
+                margin: const EdgeInsets.only(bottom: 24),
                 child: Image.asset(
                   "assets/images/bg_profile.jpg",
                   fit: BoxFit.fill,
                 ),
               ),
-              ListTile(
-                title: const Text("Item => 1"),
-                onTap: () {
-                  print("tap1");
-                },
+              ItemLeading(
+                icon: Icons.home,
+                content: "Home",
+                onPressed: () {},
               ),
-              ListTile(
-                title: const Text("Item => 2"),
-                onTap: () {
-                  print("tap2");
-                },
+              Divider(
+                thickness: 1,
+                height: 0,
+                color: Colors.grey.shade300,
+              ),
+              ItemLeading(
+                icon: Icons.star_outline,
+                content: "Favourite",
+                onPressed: () {},
+              ),
+              Divider(
+                thickness: 1,
+                height: 0,
+                color: Colors.grey.shade300,
+              ),
+              ItemLeading(
+                icon: Icons.cached,
+                content: "Updates",
+                onPressed: () {},
+              ),
+              Divider(
+                thickness: 1,
+                height: 0,
+                color: Colors.grey.shade300,
+              ),
+              ItemLeading(
+                icon: Icons.find_in_page,
+                content: "File Explorer",
+                onPressed: () {},
+              ),
+              Divider(
+                thickness: 1,
+                height: 0,
+                color: Colors.grey.shade300,
+              ),
+              ItemLeading(
+                icon: Icons.settings,
+                content: "Settings",
+                onPressed: () {},
+              ),
+              Divider(
+                thickness: 1,
+                height: 0,
+                color: Colors.grey.shade300,
+              ),
+              ItemLeading(
+                icon: Icons.logout,
+                content: "Logout",
+                onPressed: () {},
               ),
             ],
           ),
@@ -185,6 +230,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+//Vẽ submenu
 class TooltipShape extends ShapeBorder {
   const TooltipShape();
 

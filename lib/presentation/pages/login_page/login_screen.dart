@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccessLoaded) {
-          Navigator.pushReplacement(context,
+          Navigator.push(context,
               MaterialPageRoute(builder: (context) => const HomePage()));
         }
         if (state is LoginFailLoaded) {
