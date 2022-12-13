@@ -23,6 +23,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    getFolderlv2();
+
     void onSelected(BuildContext context, int value) {
       switch (value) {
         case 0:

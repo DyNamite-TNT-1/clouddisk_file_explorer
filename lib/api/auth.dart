@@ -55,11 +55,17 @@ class AuthApi {
       ),
     );
     var responseData = response.data;
-    for (String p in response.headers["set-cookie"]!) {
-      if (p.contains("HANBIRO_GW")) {
-        print(p);
-      }
-    }
+
     return responseData;
   }
+}
+
+Future getFolderlv2() async {
+  AuthApi api = AuthApi();
+
+  String url =
+      "https://groupware57.hanbiro.net/cloud/api/get.php?cache=false&id=my&type=file";
+  var resp = await api.get(url, folderHeader);
+  // ignore: unnecessary_type_check
+  print(resp);
 }

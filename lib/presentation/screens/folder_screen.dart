@@ -20,7 +20,6 @@ class _FolderScreenState extends State<FolderScreen> {
     return WillPopScope(
       onWillPop: () async {
         // BlocProvider.of<FolderTreeBloc>(context).add(const BackEvent());
-
         return false;
       },
       child: Column(
