@@ -12,8 +12,7 @@ class FolderTreeInitial extends FolderTreeState {}
 class FolderTreeLoading extends FolderTreeState {}
 
 class FolderTreeLoaded extends FolderTreeState {
-  final List<Item> items;
-
+  final List<Folder> items;
   const FolderTreeLoaded(this.items);
 
   @override

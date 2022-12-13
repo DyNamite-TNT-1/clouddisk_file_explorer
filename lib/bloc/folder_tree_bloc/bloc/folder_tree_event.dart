@@ -8,16 +8,16 @@ abstract class FolderTreeEvent extends Equatable {
 }
 
 class LoadEvent extends FolderTreeEvent {
-  final int id;
+  final String id;
   const LoadEvent(this.id);
 
   @override
   List<Object> get props => [id];
 }
 
-class BackEvent extends FolderTreeEvent {
-  const BackEvent();
+// class BackEvent extends FolderTreeEvent {
+//   const BackEvent();
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }

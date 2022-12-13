@@ -33,27 +33,30 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     Future pushDialog() {
       return showDialog(
-          context: context,
-          barrierColor: Colors.transparent,
-          builder: (context) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 32),
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: Colors.green.shade900,
-                ),
+        context: context,
+        barrierColor: Colors.transparent,
+        builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 32),
+            child: Center(
+              child: CircularProgressIndicator(
+                color: Colors.green.shade900,
               ),
-            );
-          });
+            ),
+          );
+        },
+      );
     }
 
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccessLoaded) {
+          Navigator.pop(context); //pop dialog
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const HomePage()));
         }
         if (state is LoginFailLoaded) {
+          Navigator.pop(context); //pop dialog
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.error)));
         }

@@ -1,5 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
+import 'package:clouddisk_login_form/models/user.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:clouddisk_login_form/api/auth.dart';
@@ -14,9 +15,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginEvent>((event, emit) async {
       if (event is ClickedLoginEvent) {
         emit(LoginLoading());
-        final value = await api.post(baseUrl, event.req.getMap());
+        final value = await api.post(loginUrl, event.req.getMap(), loginHeader);
         var loginRes = LogInResponse(value);
         if (loginRes.success == true) {
+          user.hmailKey = loginRes.hmailkey;
+          user.session = loginRes.session;
           emit(LoginSuccessLoaded(loginRes));
         } else {
           emit(const LoginFailLoaded("Không đăng nhập được"));

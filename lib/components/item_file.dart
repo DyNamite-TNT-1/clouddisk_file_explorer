@@ -2,7 +2,7 @@ import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
 
 class ItemFile extends StatelessWidget {
-  final Item item;
+  final Folder item;
   final VoidCallback onPressed;
 
   const ItemFile({
@@ -18,7 +18,7 @@ class ItemFile extends StatelessWidget {
         onPressed();
       },
       child: Container(
-        padding: const EdgeInsets.only(top: 12, bottom: 12, left: 16),
+        padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16),
         decoration: BoxDecoration(
             border: Border(
           bottom: BorderSide(
@@ -27,27 +27,27 @@ class ItemFile extends StatelessWidget {
         )),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                // borderRadius: BorderRadius.circular(12),
-                shape: BoxShape.circle,
-                color: item is Folder ? ((item as Folder).color) : null,
-              ),
-              child: item is Folder
-                  ? Icon(
-                      (item as Folder).icon,
-                      color: Colors.white,
-                      size: 20,
-                    )
-                  : null,
-            ),
+            // Container(
+            //   padding: const EdgeInsets.all(4),
+            //   decoration: BoxDecoration(
+            //     // borderRadius: BorderRadius.circular(12),
+            //     shape: BoxShape.circle,
+            //     // color: item is Folder ? ((item as Folder).color) : null,
+            //   ),
+            //   child: item is Folder
+            //       ? Icon(
+            //           (item as Folder).icon,
+            //           color: Colors.white,
+            //           size: 20,
+            //         )
+            //       : null,
+            // ),
             const SizedBox(
               width: 8,
             ),
             Center(
               child: Text(
-                '${item.title}${item is File ? '.${(item as File).extension}' : ''}',
+                item.text,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,

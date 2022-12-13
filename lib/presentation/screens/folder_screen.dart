@@ -9,7 +9,7 @@ class FolderScreen extends StatefulWidget {
     super.key,
     required this.folders,
   });
-  final List<Item> folders;
+  final List<Folder> folders;
   @override
   State<FolderScreen> createState() => _FolderScreenState();
 }
@@ -19,7 +19,8 @@ class _FolderScreenState extends State<FolderScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        BlocProvider.of<FolderTreeBloc>(context).add(const BackEvent());
+        // BlocProvider.of<FolderTreeBloc>(context).add(const BackEvent());
+
         return false;
       },
       child: Column(

@@ -1,12 +1,9 @@
 import 'package:clouddisk_login_form/bloc/login/bloc/login_bloc.dart';
-import 'package:clouddisk_login_form/models/item.dart';
-import 'package:clouddisk_login_form/presentation/pages/home_page/home_page.dart';
 import 'package:clouddisk_login_form/presentation/pages/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  fakeData();
   runApp(const MyApp());
 }
 
