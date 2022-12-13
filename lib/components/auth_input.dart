@@ -57,7 +57,7 @@ class _AuthInputState extends State<AuthInput> {
               decoration: InputDecoration(
                 labelText: widget.label,
                 floatingLabelBehavior: FloatingLabelBehavior.auto,
-                contentPadding: const EdgeInsets.only(top: -8, bottom: 4),
+                contentPadding: const EdgeInsets.only(top: -6, bottom: 4),
                 border: InputBorder.none,
                 suffixIcon: widget.isPassword
                     ? IconButton(
