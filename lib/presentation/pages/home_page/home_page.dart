@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: AppBar(
+          elevation: 0,
           automaticallyImplyLeading: false, //turn off leading
           title: const Text("Home"),
           actions: [

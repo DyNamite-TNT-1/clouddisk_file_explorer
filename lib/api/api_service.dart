@@ -1,7 +1,3 @@
-// ignore: depend_on_referenced_packages
-import 'package:clouddisk_login_form/api/api_header.dart';
-import 'package:clouddisk_login_form/api/api_url.dart';
-import 'package:clouddisk_login_form/models/user.dart';
 import 'package:dio/dio.dart';
 
 class AuthApi {
@@ -30,12 +26,3 @@ class AuthApi {
     return responseData;
   }
 }
-
-// Future getFolderlv2() async {
-//   AuthApi api = AuthApi();
-
-//   String url = getFolderUrl("file", "my");
-//   var resp = await api.get(url, folderHeader);
-//   // ignore: unnecessary_type_check
-//   print(resp);
-// }

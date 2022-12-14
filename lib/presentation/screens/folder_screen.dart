@@ -34,7 +34,6 @@ class _FolderScreenState extends State<FolderScreen> {
       create: (context) => folderTreeBloc,
       child: BlocBuilder<FolderTreeBloc, FolderTreeState>(
         builder: (context, state) {
-          print(state.toString());
           if (state is FolderTreeLoading) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -43,7 +42,19 @@ class _FolderScreenState extends State<FolderScreen> {
             return Scaffold(
               body: Column(
                 children: [
-                  // Text("path"),
+                  widget.folderId == ""
+                      ? Container()
+                      : Container(
+                          width: double.infinity,
+                          padding:
+                              const EdgeInsets.only(left: 4, top: 5, bottom: 5),
+                          decoration:
+                              BoxDecoration(color: Colors.cyan.shade300),
+                          child: const Text(
+                            "path",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
                   Expanded(
                     child: ListItems(items: state.items),
                   ),
