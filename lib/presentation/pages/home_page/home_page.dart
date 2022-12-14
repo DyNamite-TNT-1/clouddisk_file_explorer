@@ -1,7 +1,5 @@
-import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -55,11 +53,18 @@ class _HomePageState extends State<HomePage> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          return !(navKey.currentState?.canPop() ?? true);
+          if (navKey.currentState != null) {
+            if (navKey.currentState!.canPop()) {
+              navKey.currentState!.pop();
+              return false;
+            }
+          }
+          return true;
         },
         child: Navigator(
           key: navKey,
           onGenerateRoute: (settings) {
+            Widget page = const FolderScreen(folderId: "");
             switch (settings.name) {
               case "/":
                 return MaterialPageRoute(
@@ -68,7 +73,6 @@ class _HomePageState extends State<HomePage> {
                     return const FolderScreen(folderId: "");
                   },
                 );
-
               case "/folderScreen":
                 var arguments = settings.arguments as String;
                 return MaterialPageRoute(
@@ -78,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 );
             }
-            return null;
+            return MaterialPageRoute(builder: (_) => page);
           },
         ),
       ),

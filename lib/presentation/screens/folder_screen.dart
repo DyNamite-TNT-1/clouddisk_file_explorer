@@ -40,13 +40,15 @@ class _FolderScreenState extends State<FolderScreen> {
               child: CircularProgressIndicator(),
             );
           } else if (state is FolderTreeLoaded) {
-            return Column(
-              children: [
-                // Text("path"),
-                Expanded(
-                  child: ListItems(items: state.items),
-                ),
-              ],
+            return Scaffold(
+              body: Column(
+                children: [
+                  // Text("path"),
+                  Expanded(
+                    child: ListItems(items: state.items),
+                  ),
+                ],
+              ),
             );
           }
           return Container();
