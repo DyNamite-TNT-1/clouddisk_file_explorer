@@ -45,9 +45,10 @@ class ItemFile extends StatelessWidget {
             const SizedBox(
               width: 8,
             ),
-            Center(
+            Flexible(
               child: Text(
                 item.text,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,

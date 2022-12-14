@@ -1,8 +1,8 @@
-import 'package:clouddisk_login_form/api/auth.dart';
+import 'package:clouddisk_login_form/api/api_service.dart';
+import 'package:clouddisk_login_form/api/request/login_req.dart';
 import 'package:clouddisk_login_form/bloc/login/bloc/login_bloc.dart';
 import 'package:clouddisk_login_form/components/auth_button.dart';
 import 'package:clouddisk_login_form/components/auth_input.dart';
-import 'package:clouddisk_login_form/models/login.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

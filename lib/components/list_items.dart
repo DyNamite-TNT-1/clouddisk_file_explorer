@@ -21,11 +21,11 @@ class _ListItemsState extends State<ListItems> {
             itemBuilder: (context, index) => ItemFile(
               item: widget.items[index],
               onPressed: () {
-                if (widget.items[index] is Folder) {
-                  // BlocProvider.of<FolderTreeBloc>(context).add(
-                  //   LoadEvent(widget.items[index].id),
-                  // );
-                }
+                // if (widget.items[index] is Folder) {
+                BlocProvider.of<FolderTreeBloc>(context).add(
+                  LoadEvent(widget.items[index].id),
+                );
+                // }
               },
             ),
           )

@@ -1,4 +1,4 @@
-import 'package:clouddisk_login_form/api/auth.dart';
+import 'package:clouddisk_login_form/api/api_service.dart';
 import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/models/item.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
@@ -23,8 +23,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    getFolderlv2();
-
     void onSelected(BuildContext context, int value) {
       switch (value) {
         case 0:
@@ -38,6 +36,7 @@ class _HomePageState extends State<HomePage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: AppBar(
+          automaticallyImplyLeading: false, //turn off leading
           title: const Text("Home"),
           actions: [
             Theme(

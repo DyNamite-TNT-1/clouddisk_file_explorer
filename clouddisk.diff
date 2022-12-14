@@ -1,0 +1,1000 @@
+diff --git a/lib/api/auth.dart b/lib/api/auth.dart
+index ee47d2a..fa16976 100644
+--- a/lib/api/auth.dart
++++ b/lib/api/auth.dart
+@@ -1,8 +1,12 @@
++// ignore: depend_on_referenced_packages
++import 'package:clouddisk_login_form/models/user.dart';
+ import 'package:dio/dio.dart';
+ 
+-const baseUrl =
+-    'https://groupware57.hanbiro.net/ngw/sign/auth?is_checking_otp=1';
+-const defaultHeader = {
++const baseUrl = "https://groupware57.hanbiro.net";
++const loginUrl = "$baseUrl/ngw/sign/auth?is_checking_otp=1";
++const getFolderUrl = "$baseUrl/cloud/api/get.php?access=1&type=dir";
++//header của login
++final loginHeader = {
+   "Content-Type": "application/x-www-form-urlencoded",
+   'APP_TYPE': 'clouddisk',
+   'App-Type': 'clouddisk',
+@@ -15,20 +19,53 @@ const defaultHeader = {
+   'device_id': '1e10f743-196e-4bc0-aee7-8c14690f2ac4',
+   'X-REQUESTED-WITH': 'XMLHttpRequest',
+   "User_Agent": "Android 1.66 APP_HANBIRO_2.0.0.2",
++  "Cookie":
++      ";HANBIRO_GW=010254fedc4eaa12683367c2601053f919d8fd28b35cfd8c2f42173ed918e48eb9ab17480894076ec3ad7e268176e6b3;hmail_key=33b0cd76a231a3a0a6e247d814c23f9a;cook=kie",
++};
++List<String> cookie = [
++  ";HANBIRO_GW=${user.session}",
++  "hmail_key=${user.hmailKey}",
++  "cook=kie",
++];
++
++//header của getFolder
++final folderHeader = {
++  "Cookie": cookie.join(";"),
+ };
+ 
+ class AuthApi {
+   final Dio _dio = Dio();
++  Future<String> get(url, Map<String, dynamic>? header) async {
++    var response = await _dio.get(
++      url,
++      options: Options(
++        headers: header,
++      ),
++    );
++    var responseData = response.data;
++    return responseData;
++  }
+ 
+-  Future<Map> post(url, Map req) async {
++  Future<Map> post(url, Map req, Map<String, dynamic>? header) async {
+     var response = await _dio.post(
+       url,
+       data: req,
+       options: Options(
+-        headers: defaultHeader,
++        headers: header,
+       ),
+     );
+     var responseData = response.data;
++
+     return responseData;
+   }
+ }
++
++Future getFolderlv2() async {
++  AuthApi api = AuthApi();
++
++  String url =
++      "https://groupware57.hanbiro.net/cloud/api/get.php?cache=false&id=my&type=file";
++  var resp = await api.get(url, folderHeader);
++  // ignore: unnecessary_type_check
++  print(resp);
++}
+diff --git a/lib/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart b/lib/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart
+index 1919d98..2e25020 100644
+--- a/lib/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart
++++ b/lib/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart
+@@ -1,5 +1,8 @@
+ // ignore: depend_on_referenced_packages
++import 'dart:convert';
++
+ import 'package:bloc/bloc.dart';
++import 'package:clouddisk_login_form/api/auth.dart';
+ import 'package:equatable/equatable.dart';
+ 
+ import 'package:clouddisk_login_form/models/item.dart';
+@@ -8,47 +11,52 @@ part 'folder_tree_event.dart';
+ part 'folder_tree_state.dart';
+ 
+ class FolderTreeBloc extends Bloc<FolderTreeEvent, FolderTreeState> {
+-  List<int> ids = []; // Tạo một list gồm những id
++  // List<int> ids = []; // Tạo một list gồm những id
++  AuthApi api = AuthApi();
++
+   FolderTreeBloc() : super(FolderTreeInitial()) {
+     on<FolderTreeEvent>((event, emit) async {
+       if (event is LoadEvent) {
+         emit(FolderTreeLoading());
+-        final id = event.id;
+-        for (Folder folder in folders) {
+-          if (folder.id == id) {
+-            ids.add(id); // Lưu những id đã đi qua vào ids
+-            await Future.delayed(const Duration(seconds: 1), () {
+-              //Tạo cảm giác load data
+-              emit(FolderTreeLoaded(folder.children));
+-            });
+-            // emit(FolderTreeLoaded(folder.children));
+-            break;
+-          }
+-        }
+-      }
+-      if (event is BackEvent) {
+-        emit(FolderTreeLoading());
+-        //ids.last tức là id của folder đang hiển thị
+-        if (ids.last != 0) {
+-          //nếu folder đang hiển thị không phải folder gốc thì sẽ xóa nó đi
+-          ids.removeLast();
+-        } else {
+-          // nếu đang ở folder gốc thì clear toàn bộ ids và gán phần tử đầu tiên là folder gốc
+-          ids.clear();
+-          ids.add(0);
+-        }
+-        final preId = ids[ids.length - 1];
+-        //preId lưu trữ id của folder trước folder hiện tại, nếu id đang = 0 thì ids chỉ có mỗi một phần tử là 0, vì đã clear ở trên
+-        for (Folder folder in folders) {
+-          if (folder.id == preId) {
+-            await Future.delayed(const Duration(seconds: 1), () {
+-              //Tạo cảm giác load data
+-              emit(FolderTreeLoaded(folder.children));
+-            });
+-            break;
+-          }
+-        }
++
++        // final id = event.id;
++        // for (Folder folder in folders) {
++        //   if (folder.id == id) {
++        // ids.add(id); // Lưu những id đã đi qua vào ids
++        final resp = await api.get(getFolderUrl, folderHeader);
++        final json = jsonDecode(resp) as List;
++        folders =
++            json.map((folderJson) => Folder.fromJson(folderJson)).toList();
++        emit(FolderTreeLoaded(folders));
++
++        // emit(FolderTreeLoaded(folder.children));
++        //     break;
++        //   }
++        // }
+       }
++      // if (event is BackEvent) {
++      //   emit(FolderTreeLoading());
++      //   //ids.last tức là id của folder đang hiển thị
++      //   if (ids.last != 0) {
++      //     //nếu folder đang hiển thị không phải folder gốc thì sẽ xóa nó đi
++      //     ids.removeLast();
++      //   } else {
++      //     // nếu đang ở folder gốc thì clear toàn bộ ids và gán phần tử đầu tiên là folder gốc
++      //     ids.clear();
++      //     ids.add(0);
++      //   }
++      //   final preId = ids[ids.length - 1];
++      //   //preId lưu trữ id của folder trước folder hiện tại, nếu id đang = 0 thì ids chỉ có mỗi một phần tử là 0, vì đã clear ở trên
++      //   for (Folder folder in folders) {
++      //     if (folder.id == preId) {
++      //       await Future.delayed(const Duration(seconds: 1), () {
++      //         //Tạo cảm giác load data
++      //         emit(FolderTreeLoaded(folder.children));
++      //       });
++      //       break;
++      //     }
++      //   }
++      // }
+     });
+   }
+ }
+diff --git a/lib/bloc/folder_tree_bloc/bloc/folder_tree_event.dart b/lib/bloc/folder_tree_bloc/bloc/folder_tree_event.dart
+index be623fd..9784692 100644
+--- a/lib/bloc/folder_tree_bloc/bloc/folder_tree_event.dart
++++ b/lib/bloc/folder_tree_bloc/bloc/folder_tree_event.dart
+@@ -8,16 +8,16 @@ abstract class FolderTreeEvent extends Equatable {
+ }
+ 
+ class LoadEvent extends FolderTreeEvent {
+-  final int id;
++  final String id;
+   const LoadEvent(this.id);
+ 
+   @override
+   List<Object> get props => [id];
+ }
+ 
+-class BackEvent extends FolderTreeEvent {
+-  const BackEvent();
++// class BackEvent extends FolderTreeEvent {
++//   const BackEvent();
+ 
+-  @override
+-  List<Object> get props => [];
+-}
++//   @override
++//   List<Object> get props => [];
++// }
+diff --git a/lib/bloc/folder_tree_bloc/bloc/folder_tree_state.dart b/lib/bloc/folder_tree_bloc/bloc/folder_tree_state.dart
+index 50bad17..35ef393 100644
+--- a/lib/bloc/folder_tree_bloc/bloc/folder_tree_state.dart
++++ b/lib/bloc/folder_tree_bloc/bloc/folder_tree_state.dart
+@@ -12,8 +12,7 @@ class FolderTreeInitial extends FolderTreeState {}
+ class FolderTreeLoading extends FolderTreeState {}
+ 
+ class FolderTreeLoaded extends FolderTreeState {
+-  final List<Item> items;
+-
++  final List<Folder> items;
+   const FolderTreeLoaded(this.items);
+ 
+   @override
+diff --git a/lib/bloc/login/bloc/login_bloc.dart b/lib/bloc/login/bloc/login_bloc.dart
+index ce24ca5..c8c83ae 100644
+--- a/lib/bloc/login/bloc/login_bloc.dart
++++ b/lib/bloc/login/bloc/login_bloc.dart
+@@ -1,5 +1,6 @@
+ // ignore: depend_on_referenced_packages
+ import 'package:bloc/bloc.dart';
++import 'package:clouddisk_login_form/models/user.dart';
+ import 'package:equatable/equatable.dart';
+ 
+ import 'package:clouddisk_login_form/api/auth.dart';
+@@ -14,9 +15,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
+     on<LoginEvent>((event, emit) async {
+       if (event is ClickedLoginEvent) {
+         emit(LoginLoading());
+-        final value = await api.post(baseUrl, event.req.getMap());
++        final value = await api.post(loginUrl, event.req.getMap(), loginHeader);
+         var loginRes = LogInResponse(value);
+         if (loginRes.success == true) {
++          user.hmailKey = loginRes.hmailkey;
++          user.session = loginRes.session;
+           emit(LoginSuccessLoaded(loginRes));
+         } else {
+           emit(const LoginFailLoaded("Không đăng nhập được"));
+diff --git a/lib/components/auth_input.dart b/lib/components/auth_input.dart
+index 94239a2..ea94596 100644
+--- a/lib/components/auth_input.dart
++++ b/lib/components/auth_input.dart
+@@ -57,7 +57,7 @@ class _AuthInputState extends State<AuthInput> {
+               decoration: InputDecoration(
+                 labelText: widget.label,
+                 floatingLabelBehavior: FloatingLabelBehavior.auto,
+-                contentPadding: const EdgeInsets.only(top: -8, bottom: 4),
++                contentPadding: const EdgeInsets.only(top: -6, bottom: 4),
+                 border: InputBorder.none,
+                 suffixIcon: widget.isPassword
+                     ? IconButton(
+diff --git a/lib/components/item_file.dart b/lib/components/item_file.dart
+index ea9ad83..3476abc 100644
+--- a/lib/components/item_file.dart
++++ b/lib/components/item_file.dart
+@@ -2,7 +2,7 @@ import 'package:clouddisk_login_form/models/item.dart';
+ import 'package:flutter/material.dart';
+ 
+ class ItemFile extends StatelessWidget {
+-  final Item item;
++  final Folder item;
+   final VoidCallback onPressed;
+ 
+   const ItemFile({
+@@ -18,7 +18,7 @@ class ItemFile extends StatelessWidget {
+         onPressed();
+       },
+       child: Container(
+-        padding: const EdgeInsets.only(top: 12, bottom: 12, left: 16),
++        padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16),
+         decoration: BoxDecoration(
+             border: Border(
+           bottom: BorderSide(
+@@ -27,27 +27,27 @@ class ItemFile extends StatelessWidget {
+         )),
+         child: Row(
+           children: [
+-            Container(
+-              padding: const EdgeInsets.all(4),
+-              decoration: BoxDecoration(
+-                // borderRadius: BorderRadius.circular(12),
+-                shape: BoxShape.circle,
+-                color: item is Folder ? ((item as Folder).color) : null,
+-              ),
+-              child: item is Folder
+-                  ? Icon(
+-                      (item as Folder).icon,
+-                      color: Colors.white,
+-                      size: 20,
+-                    )
+-                  : null,
+-            ),
++            // Container(
++            //   padding: const EdgeInsets.all(4),
++            //   decoration: BoxDecoration(
++            //     // borderRadius: BorderRadius.circular(12),
++            //     shape: BoxShape.circle,
++            //     // color: item is Folder ? ((item as Folder).color) : null,
++            //   ),
++            //   child: item is Folder
++            //       ? Icon(
++            //           (item as Folder).icon,
++            //           color: Colors.white,
++            //           size: 20,
++            //         )
++            //       : null,
++            // ),
+             const SizedBox(
+               width: 8,
+             ),
+             Center(
+               child: Text(
+-                '${item.title}${item is File ? '.${(item as File).extension}' : ''}',
++                item.text,
+                 style: const TextStyle(
+                   fontSize: 16,
+                   fontWeight: FontWeight.w400,
+diff --git a/lib/components/item_leading.dart b/lib/components/item_leading.dart
+new file mode 100644
+index 0000000..ba70dc1
+--- /dev/null
++++ b/lib/components/item_leading.dart
+@@ -0,0 +1,43 @@
++import 'package:flutter/material.dart';
++
++class ItemLeading extends StatelessWidget {
++  const ItemLeading({
++    Key? key,
++    required this.icon,
++    required this.content,
++    required this.onPressed,
++  }) : super(key: key);
++  final IconData icon;
++  final String content;
++  final VoidCallback onPressed;
++
++  @override
++  Widget build(BuildContext context) {
++    return InkWell(
++      onTap: () {
++        onPressed();
++      },
++      child: Padding(
++        padding: const EdgeInsets.all(16.0),
++        child: Row(
++          children: [
++            Icon(
++              icon,
++              color: Colors.grey.shade700,
++            ),
++            const SizedBox(
++              width: 24,
++            ),
++            Text(
++              content,
++              style: const TextStyle(
++                fontSize: 18,
++                color: Colors.black,
++              ),
++            )
++          ],
++        ),
++      ),
++    );
++  }
++}
+diff --git a/lib/components/list_items.dart b/lib/components/list_items.dart
+index 111fe6a..2df6c65 100644
+--- a/lib/components/list_items.dart
++++ b/lib/components/list_items.dart
+@@ -3,10 +3,9 @@ import 'package:clouddisk_login_form/components/item_file.dart';
+ import 'package:clouddisk_login_form/models/item.dart';
+ import 'package:flutter/material.dart';
+ import 'package:flutter_bloc/flutter_bloc.dart';
+-import 'package:pull_to_refresh/pull_to_refresh.dart';
+ 
+ class ListItems extends StatefulWidget {
+-  final List<Item> items;
++  final List<Folder> items;
+   const ListItems({super.key, required this.items});
+ 
+   @override
+@@ -14,64 +13,30 @@ class ListItems extends StatefulWidget {
+ }
+ 
+ class _ListItemsState extends State<ListItems> {
+-  RefreshController refreshController =
+-      RefreshController(initialRefresh: false);
+-
+-  void onRefresh() async {
+-    // monitor network fetch
+-    await Future.delayed(Duration(milliseconds: 1000));
+-    refreshController.refreshCompleted();
+-  }
+-
+   @override
+   Widget build(BuildContext context) {
+-    return SmartRefresher(
+-      controller: refreshController,
+-      enablePullDown: true,
+-      header: CustomHeader(
+-        builder: ((context, mode) {
+-          Widget body;
+-          if (mode == LoadStatus.idle) {
+-            body = const Text("pull down to refresh");
+-          } else if (mode == LoadStatus.loading) {
+-            body = const Text("loading");
+-          } else if (mode == LoadStatus.canLoading) {
+-            body = const Text("release to refresh");
+-          } else {
+-            body = const Text("No more Data");
+-          }
+-          return SizedBox(
+-            height: 35,
+-            child: Center(
+-              child: body,
++    return (widget.items.isNotEmpty)
++        ? ListView.builder(
++            itemCount: widget.items.length,
++            itemBuilder: (context, index) => ItemFile(
++              item: widget.items[index],
++              onPressed: () {
++                if (widget.items[index] is Folder) {
++                  // BlocProvider.of<FolderTreeBloc>(context).add(
++                  //   LoadEvent(widget.items[index].id),
++                  // );
++                }
++              },
+             ),
+-          );
+-        }),
+-      ),
+-      onRefresh: onRefresh,
+-      child: (widget.items.isNotEmpty)
+-          ? ListView.builder(
+-              itemCount: widget.items.length,
+-              itemBuilder: (context, index) => ItemFile(
+-                item: widget.items[index],
+-                onPressed: () {
+-                  if (widget.items[index] is Folder) {
+-                    BlocProvider.of<FolderTreeBloc>(context).add(
+-                      LoadEvent(widget.items[index].id),
+-                    );
+-                  }
+-                },
+-              ),
+-            )
+-          : const Center(
+-              child: Text(
+-                "No Data",
+-                style: TextStyle(
+-                  fontSize: 18,
+-                  color: Colors.black54,
+-                ),
++          )
++        : const Center(
++            child: Text(
++              "No Data",
++              style: TextStyle(
++                fontSize: 18,
++                color: Colors.black54,
+               ),
+             ),
+-    );
++          );
+   }
+ }
+diff --git a/lib/main.dart b/lib/main.dart
+index 4b3d10f..e311817 100644
+--- a/lib/main.dart
++++ b/lib/main.dart
+@@ -1,12 +1,9 @@
+ import 'package:clouddisk_login_form/bloc/login/bloc/login_bloc.dart';
+-import 'package:clouddisk_login_form/models/item.dart';
+-import 'package:clouddisk_login_form/presentation/pages/home_page/home_page.dart';
+ import 'package:clouddisk_login_form/presentation/pages/login_page/login_screen.dart';
+ import 'package:flutter/material.dart';
+ import 'package:flutter_bloc/flutter_bloc.dart';
+ 
+ void main() {
+-  fakeData();
+   runApp(const MyApp());
+ }
+ 
+diff --git a/lib/models/item.dart b/lib/models/item.dart
+index ab39e47..3e288be 100644
+--- a/lib/models/item.dart
++++ b/lib/models/item.dart
+@@ -1,87 +1,21 @@
+-import 'package:flutter/material.dart';
+-
+-class Item {
+-  int id;
+-  String title;
+-  Item(this.id, this.title);
+-}
+-
+-class File extends Item {
+-  String extension;
+-  String image;
+-  File(int id, String title, this.image, this.extension) : super(id, title);
+-}
+-
+-class Folder extends Item {
+-  IconData? icon;
+-  Color? color;
+-  List<Item> children;
++class Folder {
++  final String id;
++  final String text;
+   Folder(
+-    int id,
+-    String title,
+-    this.icon,
+-    this.color,
+-    this.children,
+-  ) : super(id, title);
+-  void addChildren(List<Item> items) {
+-    for (Item item in items) {
+-      children.add(item);
+-    }
+-  }
++    this.id,
++    this.text,
++  );
+ 
+-  void updateIconandColor(List<Item> items) {
+-    for (Item item in items) {
+-      if (item is Folder) {
+-        item.icon = icon;
+-        item.color = color;
+-      }
+-    }
++  factory Folder.fromJson(Map<String, dynamic> json) {
++    return Folder(
++      json['id'] as String,
++      json['text'] as String,
++    );
+   }
+-}
+-
+-List<File> files = [
+-  File(0, 'a', 'assets/images/file-image.png', "jpg"),
+-  File(1, 'smile', 'assets/images/file-image.png', "gif"),
+-  File(2, 'z', 'assets/images/file-image.png', "txt"),
+-  File(3, 'Beauty', 'assets/images/image.jpg', "jpg"),
+-  File(4, 'MusicFile', 'assets/images/file-image.png', "mp3"),
+-];
+ 
+-List<Folder> folders = [
+-  Folder(0, 'Home', null, null, []),
+-  Folder(1, 'My', Icons.folder, Colors.blueAccent.shade400, []),
+-  Folder(2, 'CloudFolder', Icons.cloud_sync, Colors.green.shade900, []),
+-  Folder(3, 'Company', Icons.snippet_folder, Colors.orange.shade400, []),
+-  Folder(4, 'Shared', Icons.share, Colors.purple.shade800, []),
+-  Folder(5, 'Notification Folder', Icons.campaign_outlined, Colors.brown, []),
+-  Folder(6, 'Guest Folder', Icons.source, Colors.teal.shade700, []),
+-  Folder(7, 'Trash', Icons.delete_outline, Colors.red.shade900, []),
+-  Folder(8, 'QA', null, null, []),
+-  Folder(9, 'Tester', null, null, []),
+-  Folder(10, 'Secure', null, null, []),
+-];
+-
+-void fakeData() {
+-  folders[0].addChildren([
+-    folders[1],
+-    folders[2],
+-    folders[3],
+-    folders[4],
+-    folders[5],
+-    folders[6],
+-    folders[7],
+-  ]);
+-  folders[1].addChildren([
+-    folders[8],
+-    files[0],
+-    folders[9],
+-  ]);
+-  folders[2].addChildren([
+-    files[1],
+-  ]);
+-  folders[3].addChildren([
+-    folders[10],
+-  ]);
+-  folders[1].updateIconandColor(folders[1].children);
+-  folders[3].updateIconandColor(folders[3].children);
++  @override
++  String toString() => 'Folder(id: $id, text: $text)';
+ }
++
++List<Folder> folders = [];
++List<Folder> subFolders = [];
+diff --git a/lib/models/login.dart b/lib/models/login.dart
+index 74b988f..9bcd0a5 100644
+--- a/lib/models/login.dart
++++ b/lib/models/login.dart
+@@ -21,22 +21,32 @@ class LogInRequest {
+ }
+ 
+ final LogInRequest logInRequest = LogInRequest(
+-    "cmGw7OXyYe4:APA91bGYAL29_GyI7wx3IcFiVYsxZbt8FtJJezhs1Ot_F0F1vEHljzkmV28p9owvsI3ABM3yvqwpkEdqCXJWTGwXb9XQwFtDYqaS-9Inc",
+-    "oRfAa0Ex1ZVsHLimNx5XpV1eeiNs+g2OhPIDYHI8IpWFhHNQ2Nm0C1KuISROSJj9NZ6rpnL6ZsYduCKvD38he8bfK7lQHB/3EcDEZWRUgCyv4z61OAf2pMXhQfbOWvCMfsdJ0JBun7iC1mQ7aSLzT/JJYDUybwJbPx72GOjQ1j4=",
+-    "wtsaWk7utF6GtHIFZKwXYarexC/Qp4fY/5xAjq7+gC/afF1d1/Gt7FEgU1UcnHxLtNHOn2dgC8Z7qdTMonGaZ+aRTGWh70sfxy0QLL7Ij/RyjqqIwqGuxNXrSOkwcp3EiN1S/6z7maMTl5XZ6c/Bww3w/G1mcsmnPCZ6gaJzMMk=",
+-    "samsung SM-N970F",
+-    "212970",
+-    "2eaba74b-e0b5-49cb-b9ab-f9630845d43b");
++  "cmGw7OXyYe4:APA91bGYAL29_GyI7wx3IcFiVYsxZbt8FtJJezhs1Ot_F0F1vEHljzkmV28p9owvsI3ABM3yvqwpkEdqCXJWTGwXb9XQwFtDYqaS-9Inc",
++  "oRfAa0Ex1ZVsHLimNx5XpV1eeiNs+g2OhPIDYHI8IpWFhHNQ2Nm0C1KuISROSJj9NZ6rpnL6ZsYduCKvD38he8bfK7lQHB/3EcDEZWRUgCyv4z61OAf2pMXhQfbOWvCMfsdJ0JBun7iC1mQ7aSLzT/JJYDUybwJbPx72GOjQ1j4=",
++  "wtsaWk7utF6GtHIFZKwXYarexC/Qp4fY/5xAjq7+gC/afF1d1/Gt7FEgU1UcnHxLtNHOn2dgC8Z7qdTMonGaZ+aRTGWh70sfxy0QLL7Ij/RyjqqIwqGuxNXrSOkwcp3EiN1S/6z7maMTl5XZ6c/Bww3w/G1mcsmnPCZ6gaJzMMk=",
++  "samsung SM-N970F",
++  "212970",
++  "2eaba74b-e0b5-49cb-b9ab-f9630845d43b",
++);
+ 
+ class LogInResponse {
+   late bool success;
+   late final String? msg;
++  late String session;
++  late String hmailkey;
+   LogInResponse(Map map) {
+-    success = map['success'];
+-    msg = map['msg'];
++    success = map["success"];
++    msg = map["msg"];
++    session = map["session"];
++    hmailkey = map["hmail_key"];
+   }
+ 
+   Map getMap() {
+-    return {"success": success};
++    return {
++      "success": success,
++      "msg": msg,
++      "session": session,
++      "hmail_key": hmailkey,
++    };
+   }
+ }
+diff --git a/lib/models/user.dart b/lib/models/user.dart
+new file mode 100644
+index 0000000..3d2ffba
+--- /dev/null
++++ b/lib/models/user.dart
+@@ -0,0 +1,7 @@
++class User {
++  String session;
++  String hmailKey;
++  User(this.session, this.hmailKey);
++}
++
++User user = User("", "");
+diff --git a/lib/presentation/pages/home_page/home_page.dart b/lib/presentation/pages/home_page/home_page.dart
+index b7d302d..7031ef0 100644
+--- a/lib/presentation/pages/home_page/home_page.dart
++++ b/lib/presentation/pages/home_page/home_page.dart
+@@ -1,4 +1,6 @@
++import 'package:clouddisk_login_form/api/auth.dart';
+ import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
++import 'package:clouddisk_login_form/models/item.dart';
+ import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
+ import 'package:flutter/material.dart';
+ import 'package:flutter_bloc/flutter_bloc.dart';
+@@ -15,12 +17,14 @@ class _HomePageState extends State<HomePage> {
+   final FolderTreeBloc folderTreeBloc = FolderTreeBloc();
+   @override
+   void initState() {
+-    folderTreeBloc.add(const LoadEvent(0));
++    folderTreeBloc.add(const LoadEvent(""));
+     super.initState();
+   }
+ 
+   @override
+   Widget build(BuildContext context) {
++    getFolderlv2();
++
+     void onSelected(BuildContext context, int value) {
+       switch (value) {
+         case 0:
+@@ -30,67 +34,26 @@ class _HomePageState extends State<HomePage> {
+       }
+     }
+ 
+-    //add drawer under appBar by using Scaffold below Scaffold
+     return Scaffold(
+       appBar: PreferredSize(
+         preferredSize: const Size.fromHeight(50),
+         child: AppBar(
+           title: const Text("Home"),
+-          leading: IconButton(
+-            onPressed: () {
+-              if (scaffoldKey.currentState!.isDrawerOpen) {
+-                Navigator.pop((context));
+-              } else {
+-                scaffoldKey.currentState!.openDrawer();
+-              }
+-            },
+-            icon: const Icon(Icons.menu),
+-          ),
+           actions: [
+             Theme(
+               data: Theme.of(context).copyWith(
+                   iconTheme: const IconThemeData(color: Colors.white),
+                   textTheme: const TextTheme().apply(bodyColor: Colors.white)),
+               child: PopupMenuButton<int>(
+-                offset: const Offset(0, 60),
+-                shape: const TooltipShape(),
++                offset: const Offset(0, 50),
+                 color: Colors.indigo.shade900,
+                 onSelected: (value) {
+                   onSelected(context, value);
+                 },
+                 itemBuilder: ((context) {
+                   return [
+-                    popupMenuItem("Download"),
+                     popupMenuItem("New Folder"),
+-                    popupMenuItem("Delete"),
+-                    popupMenuItem("Copy"),
+-                    popupMenuItem("Move"),
+-                    popupMenuItem("Favorite"),
+                     popupMenuItem("Sort"),
+-                    // const PopupMenuItem<int>(
+-                    //   value: 1,
+-                    //   child: Text("New Folder"),
+-                    // ),
+-                    // const PopupMenuItem<int>(
+-                    //   value: 2,
+-                    //   child: Text("Delete"),
+-                    // ),
+-                    // const PopupMenuItem<int>(
+-                    //   value: 3,
+-                    //   child: Text("Copy"),
+-                    // ),
+-                    // const PopupMenuItem<int>(
+-                    //   value: 4,
+-                    //   child: Text("Move"),
+-                    // ),
+-                    // const PopupMenuItem<int>(
+-                    //   value: 5,
+-                    //   child: Text("Favorite"),
+-                    // ),
+-                    // const PopupMenuItem<int>(
+-                    //   value: 6,
+-                    //   child: Text("Sort"),
+-                    // ),
+                   ];
+                 }),
+               ),
+@@ -98,51 +61,25 @@ class _HomePageState extends State<HomePage> {
+           ],
+         ),
+       ),
+-      body: Scaffold(
+-        key: scaffoldKey,
+-        drawer: Drawer(
+-          child: ListView(
+-            children: [
+-              DrawerHeader(
+-                padding: const EdgeInsets.all(0),
+-                margin: const EdgeInsets.only(bottom: 0),
+-                child: Image.asset(
+-                  "assets/images/bg_profile.jpg",
+-                  fit: BoxFit.fill,
+-                ),
+-              ),
+-              ListTile(
+-                title: const Text("Item => 1"),
+-                onTap: () {
+-                  print("tap1");
+-                },
+-              ),
+-              ListTile(
+-                title: const Text("Item => 2"),
+-                onTap: () {
+-                  print("tap2");
+-                },
+-              ),
+-            ],
+-          ),
+-        ),
+-        body: BlocProvider(
+-          create: (context) => folderTreeBloc,
+-          child: BlocBuilder<FolderTreeBloc, FolderTreeState>(
+-            builder: (context, state) {
+-              if (state is FolderTreeLoading) {
+-                return const Center(
+-                  child: CircularProgressIndicator(),
+-                );
+-              }
+-              if (state is FolderTreeLoaded) {
+-                return FolderScreen(
+-                  folders: state.items,
+-                );
+-              }
+-              return Container();
+-            },
+-          ),
++      // body: FolderScreen(
++      //   folders: folders,
++      // ),
++      body: BlocProvider(
++        create: (context) => folderTreeBloc,
++        child: BlocBuilder<FolderTreeBloc, FolderTreeState>(
++          builder: (context, state) {
++            if (state is FolderTreeLoading) {
++              return const Center(
++                child: CircularProgressIndicator(),
++              );
++            }
++            if (state is FolderTreeLoaded) {
++              return FolderScreen(
++                folders: state.items,
++              );
++            }
++            return Container();
++          },
+         ),
+       ),
+     );
+@@ -154,14 +91,6 @@ class _HomePageState extends State<HomePage> {
+       value: 0,
+       child: Container(
+         padding: const EdgeInsets.symmetric(vertical: 6),
+-        decoration: const BoxDecoration(
+-          color: Colors.red,
+-          border: Border(
+-            bottom: BorderSide(
+-              color: Colors.white,
+-            ),
+-          ),
+-        ),
+         child: Row(
+           children: [
+             const SizedBox(
+@@ -184,56 +113,3 @@ class _HomePageState extends State<HomePage> {
+     );
+   }
+ }
+-
+-class TooltipShape extends ShapeBorder {
+-  const TooltipShape();
+-
+-  final BorderSide _side = BorderSide.none;
+-  final BorderRadiusGeometry _borderRadius = BorderRadius.zero;
+-
+-  @override
+-  EdgeInsetsGeometry get dimensions => EdgeInsets.all(_side.width);
+-
+-  @override
+-  Path getInnerPath(
+-    Rect rect, {
+-    TextDirection? textDirection,
+-  }) {
+-    final Path path = Path();
+-
+-    path.addRRect(
+-      _borderRadius.resolve(textDirection).toRRect(rect).deflate(_side.width),
+-    );
+-
+-    return path;
+-  }
+-
+-  @override
+-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+-    final Path path = Path();
+-    final RRect rrect = _borderRadius.resolve(textDirection).toRRect(rect);
+-
+-    path.moveTo(0, 10);
+-    path.quadraticBezierTo(0, 0, 10, 0);
+-    path.lineTo(rrect.width - 30, 0);
+-    path.lineTo(rrect.width - 20, -10);
+-    path.lineTo(rrect.width - 10, 0);
+-    path.quadraticBezierTo(rrect.width, 0, rrect.width, 10);
+-    path.lineTo(rrect.width, rrect.height - 10);
+-    path.quadraticBezierTo(
+-        rrect.width, rrect.height, rrect.width - 10, rrect.height);
+-    path.lineTo(10, rrect.height);
+-    path.quadraticBezierTo(0, rrect.height, 0, rrect.height - 10);
+-
+-    return path;
+-  }
+-
+-  @override
+-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
+-
+-  @override
+-  ShapeBorder scale(double t) => RoundedRectangleBorder(
+-        side: _side.scale(t),
+-        borderRadius: _borderRadius * t,
+-      );
+-}
+diff --git a/lib/presentation/pages/login_page/login_screen.dart b/lib/presentation/pages/login_page/login_screen.dart
+index 0cc2722..be78863 100644
+--- a/lib/presentation/pages/login_page/login_screen.dart
++++ b/lib/presentation/pages/login_page/login_screen.dart
+@@ -33,27 +33,30 @@ class _LoginScreenState extends State<LoginScreen> {
+   Widget build(BuildContext context) {
+     Future pushDialog() {
+       return showDialog(
+-          context: context,
+-          barrierColor: Colors.transparent,
+-          builder: (context) {
+-            return Padding(
+-              padding: const EdgeInsets.only(bottom: 32),
+-              child: Center(
+-                child: CircularProgressIndicator(
+-                  color: Colors.green.shade900,
+-                ),
++        context: context,
++        barrierColor: Colors.transparent,
++        builder: (context) {
++          return Padding(
++            padding: const EdgeInsets.only(bottom: 32),
++            child: Center(
++              child: CircularProgressIndicator(
++                color: Colors.green.shade900,
+               ),
+-            );
+-          });
++            ),
++          );
++        },
++      );
+     }
+ 
+     return BlocListener<LoginBloc, LoginState>(
+       listener: (context, state) {
+         if (state is LoginSuccessLoaded) {
+-          Navigator.pushReplacement(context,
++          Navigator.pop(context); //pop dialog
++          Navigator.push(context,
+               MaterialPageRoute(builder: (context) => const HomePage()));
+         }
+         if (state is LoginFailLoaded) {
++          Navigator.pop(context); //pop dialog
+           ScaffoldMessenger.of(context)
+               .showSnackBar(SnackBar(content: Text(state.error)));
+         }
+diff --git a/lib/presentation/screens/folder_screen.dart b/lib/presentation/screens/folder_screen.dart
+index 7a0a7a3..b5ffa57 100644
+--- a/lib/presentation/screens/folder_screen.dart
++++ b/lib/presentation/screens/folder_screen.dart
+@@ -9,7 +9,7 @@ class FolderScreen extends StatefulWidget {
+     super.key,
+     required this.folders,
+   });
+-  final List<Item> folders;
++  final List<Folder> folders;
+   @override
+   State<FolderScreen> createState() => _FolderScreenState();
+ }
+@@ -19,7 +19,7 @@ class _FolderScreenState extends State<FolderScreen> {
+   Widget build(BuildContext context) {
+     return WillPopScope(
+       onWillPop: () async {
+-        BlocProvider.of<FolderTreeBloc>(context).add(const BackEvent());
++        // BlocProvider.of<FolderTreeBloc>(context).add(const BackEvent());
+         return false;
+       },
+       child: Column(
+diff --git a/pubspec.lock b/pubspec.lock
+index 8be1513..0ecf786 100644
+--- a/pubspec.lock
++++ b/pubspec.lock
+@@ -151,13 +151,6 @@ packages:
+       url: "https://pub.dartlang.org"
+     source: hosted
+     version: "6.0.4"
+-  pull_to_refresh:
+-    dependency: "direct main"
+-    description:
+-      name: pull_to_refresh
+-      url: "https://pub.dartlang.org"
+-    source: hosted
+-    version: "2.0.0"
+   sky_engine:
+     dependency: transitive
+     description: flutter
+@@ -221,4 +214,4 @@ packages:
+     version: "2.1.2"
+ sdks:
+   dart: ">=2.18.5 <3.0.0"
+-  flutter: ">=2.0.0"
++  flutter: ">=1.16.0"
+diff --git a/pubspec.yaml b/pubspec.yaml
+index 65fa7d1..db7d632 100644
+--- a/pubspec.yaml
++++ b/pubspec.yaml
+@@ -39,7 +39,6 @@ dependencies:
+   dio: ^4.0.6
+   flutter_bloc: ^8.1.1
+   equatable: 
+-  pull_to_refresh: ^2.0.0
+ dev_dependencies:
+   flutter_test:
+     sdk: flutter
