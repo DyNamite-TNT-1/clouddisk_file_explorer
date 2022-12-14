@@ -19,7 +19,7 @@ class _FolderScreenState extends State<FolderScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // BlocProvider.of<FolderTreeBloc>(context).add(const BackEvent());
+        BlocProvider.of<FolderTreeBloc>(context).add(const BackEvent());
         return false;
       },
       child: Column(
