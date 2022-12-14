@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final navKey = GlobalKey<NavigatorState>();
   final FolderTreeBloc folderTreeBloc = FolderTreeBloc();
   @override
   void initState() {
@@ -69,7 +70,34 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        body: FolderScreen(folderId: widget.folderId),
+        body: WillPopScope(
+          onWillPop: () async {
+            return !(navKey.currentState?.canPop() ?? false);
+          },
+          child: Navigator(
+            key: navKey,
+            onGenerateRoute: (settings) {
+              switch (settings.name) {
+                case "/":
+                  return MaterialPageRoute(
+                    settings: settings,
+                    builder: (context) {
+                      return FolderScreen(folderId: widget.folderId);
+                    },
+                  );
+
+                case "/folderScreen":
+                  var arguments = settings.arguments as String;
+                  return MaterialPageRoute(
+                    settings: settings,
+                    builder: (context) {
+                      return FolderScreen(folderId: arguments);
+                    },
+                  );
+              }
+            },
+          ),
+        ),
       ),
     );
   }

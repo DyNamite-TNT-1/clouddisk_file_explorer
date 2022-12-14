@@ -17,6 +17,7 @@ class _FolderScreenState extends State<FolderScreen> {
   final FolderTreeBloc folderTreeBloc = FolderTreeBloc();
   @override
   void initState() {
+    print("FOLDER ID ${widget.folderId}");
     folderTreeBloc.add(LoadEvent(widget.folderId));
     super.initState();
   }
