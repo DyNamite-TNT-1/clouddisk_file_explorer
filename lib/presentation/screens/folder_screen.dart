@@ -1,35 +1,52 @@
 import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/components/list_items.dart';
-import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FolderScreen extends StatefulWidget {
   const FolderScreen({
     super.key,
-    required this.folders,
+    required this.folderId,
   });
-  final List<Folder> folders;
+  final String folderId;
   @override
   State<FolderScreen> createState() => _FolderScreenState();
 }
 
 class _FolderScreenState extends State<FolderScreen> {
+  final FolderTreeBloc folderTreeBloc = FolderTreeBloc();
+  @override
+  void initState() {
+    folderTreeBloc.add(LoadEvent(widget.folderId));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    folderTreeBloc.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        BlocProvider.of<FolderTreeBloc>(context).add(const BackEvent());
-        return false;
+    return BlocBuilder<FolderTreeBloc, FolderTreeState>(
+      builder: (context, state) {
+        if (state is FolderTreeLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is FolderTreeLoaded) {
+          return Column(
+            children: [
+              // Text("path"),
+              Expanded(
+                child: ListItems(items: state.items),
+              ),
+            ],
+          );
+        }
+        return Container();
       },
-      child: Column(
-        children: [
-          // Text("path"),
-          Expanded(
-            child: ListItems(items: widget.folders),
-          ),
-        ],
-      ),
     );
   }
 }

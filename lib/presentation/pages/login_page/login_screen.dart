@@ -1,4 +1,3 @@
-import 'package:clouddisk_login_form/api/api_service.dart';
 import 'package:clouddisk_login_form/api/request/login_req.dart';
 import 'package:clouddisk_login_form/bloc/login/bloc/login_bloc.dart';
 import 'package:clouddisk_login_form/components/auth_button.dart';
@@ -52,8 +51,14 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         if (state is LoginSuccessLoaded) {
           Navigator.pop(context); //pop dialog
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const HomePage()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomePage(
+                folderId: "",
+              ),
+            ),
+          );
         }
         if (state is LoginFailLoaded) {
           Navigator.pop(context); //pop dialog

@@ -1,3 +1,4 @@
+import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/bloc/login/bloc/login_bloc.dart';
 import 'package:clouddisk_login_form/presentation/pages/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +37,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocProvider(
-        create: (context) => loginBloc,
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => loginBloc,
+          ),
+          BlocProvider(
+            create: (context) => FolderTreeBloc(),
+          ),
+        ],
         child: const LoginScreen(),
       ),
     );
