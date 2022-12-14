@@ -1,7 +1,5 @@
 import 'package:clouddisk_login_form/components/item_file.dart';
 import 'package:clouddisk_login_form/models/item.dart';
-import 'package:clouddisk_login_form/presentation/pages/home_page/home_page.dart';
-import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
 import 'package:flutter/material.dart';
 
 class ListItems extends StatefulWidget {

@@ -6,9 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
-    required this.folderId,
   });
-  final String folderId;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -16,18 +14,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final navKey = GlobalKey<NavigatorState>();
-  final FolderTreeBloc folderTreeBloc = FolderTreeBloc();
-  @override
-  void initState() {
-    folderTreeBloc.add(LoadEvent(widget.folderId));
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    folderTreeBloc.close();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,64 +25,61 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    return BlocProvider(
-      create: (context) => folderTreeBloc,
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: AppBar(
-            automaticallyImplyLeading: false, //turn off leading
-            title: const Text("Home"),
-            actions: [
-              Theme(
-                data: Theme.of(context).copyWith(
-                    iconTheme: const IconThemeData(color: Colors.white),
-                    textTheme:
-                        const TextTheme().apply(bodyColor: Colors.white)),
-                child: PopupMenuButton<int>(
-                  offset: const Offset(0, 50),
-                  color: Colors.indigo.shade900,
-                  onSelected: (value) {
-                    onSelected(context, value);
-                  },
-                  itemBuilder: ((context) {
-                    return [
-                      popupMenuItem("New Folder"),
-                      popupMenuItem("Sort"),
-                    ];
-                  }),
-                ),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50),
+        child: AppBar(
+          automaticallyImplyLeading: false, //turn off leading
+          title: const Text("Home"),
+          actions: [
+            Theme(
+              data: Theme.of(context).copyWith(
+                  iconTheme: const IconThemeData(color: Colors.white),
+                  textTheme: const TextTheme().apply(bodyColor: Colors.white)),
+              child: PopupMenuButton<int>(
+                offset: const Offset(0, 50),
+                color: Colors.indigo.shade900,
+                onSelected: (value) {
+                  onSelected(context, value);
+                },
+                itemBuilder: ((context) {
+                  return [
+                    popupMenuItem("New Folder"),
+                    popupMenuItem("Sort"),
+                  ];
+                }),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        body: WillPopScope(
-          onWillPop: () async {
-            return !(navKey.currentState?.canPop() ?? false);
-          },
-          child: Navigator(
-            key: navKey,
-            onGenerateRoute: (settings) {
-              switch (settings.name) {
-                case "/":
-                  return MaterialPageRoute(
-                    settings: settings,
-                    builder: (context) {
-                      return FolderScreen(folderId: widget.folderId);
-                    },
-                  );
+      ),
+      body: WillPopScope(
+        onWillPop: () async {
+          return !(navKey.currentState?.canPop() ?? true);
+        },
+        child: Navigator(
+          key: navKey,
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case "/":
+                return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) {
+                    return const FolderScreen(folderId: "");
+                  },
+                );
 
-                case "/folderScreen":
-                  var arguments = settings.arguments as String;
-                  return MaterialPageRoute(
-                    settings: settings,
-                    builder: (context) {
-                      return FolderScreen(folderId: arguments);
-                    },
-                  );
-              }
-            },
-          ),
+              case "/folderScreen":
+                var arguments = settings.arguments as String;
+                return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) {
+                    return FolderScreen(folderId: arguments);
+                  },
+                );
+            }
+            return null;
+          },
         ),
       ),
     );

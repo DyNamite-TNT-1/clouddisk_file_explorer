@@ -30,24 +30,28 @@ class _FolderScreenState extends State<FolderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FolderTreeBloc, FolderTreeState>(
-      builder: (context, state) {
-        if (state is FolderTreeLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is FolderTreeLoaded) {
-          return Column(
-            children: [
-              // Text("path"),
-              Expanded(
-                child: ListItems(items: state.items),
-              ),
-            ],
-          );
-        }
-        return Container();
-      },
+    return BlocProvider(
+      create: (context) => folderTreeBloc,
+      child: BlocBuilder<FolderTreeBloc, FolderTreeState>(
+        builder: (context, state) {
+          print(state.toString());
+          if (state is FolderTreeLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is FolderTreeLoaded) {
+            return Column(
+              children: [
+                // Text("path"),
+                Expanded(
+                  child: ListItems(items: state.items),
+                ),
+              ],
+            );
+          }
+          return Container();
+        },
+      ),
     );
   }
 }
