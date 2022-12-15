@@ -1,8 +1,8 @@
 import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
 
-class ItemFile extends StatelessWidget {
-  final Folder item;
+class ItemFile extends StatefulWidget {
+  final Item item;
   final VoidCallback onPressed;
 
   const ItemFile({
@@ -12,13 +12,19 @@ class ItemFile extends StatelessWidget {
   });
 
   @override
+  State<ItemFile> createState() => _ItemFileState();
+}
+
+class _ItemFileState extends State<ItemFile> {
+  bool? check1 = false;
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        onPressed();
+        widget.onPressed();
       },
       child: Container(
-        padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16),
+        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 12),
         decoration: BoxDecoration(
             border: Border(
           bottom: BorderSide(
@@ -27,27 +33,29 @@ class ItemFile extends StatelessWidget {
         )),
         child: Row(
           children: [
-            // Container(
-            //   padding: const EdgeInsets.all(4),
-            //   decoration: BoxDecoration(
-            //     // borderRadius: BorderRadius.circular(12),
-            //     shape: BoxShape.circle,
-            //     // color: item is Folder ? ((item as Folder).color) : null,
-            //   ),
-            //   child: item is Folder
-            //       ? Icon(
-            //           (item as Folder).icon,
-            //           color: Colors.white,
-            //           size: 20,
-            //         )
-            //       : null,
-            // ),
-            const SizedBox(
-              width: 8,
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: widget.item is Folder
+                    ? ((widget.item as Folder).color)
+                    : null,
+              ),
+              child: widget.item is Folder
+                  ? Icon(
+                      (widget.item as Folder).icon,
+                      color: Colors.white,
+                      size: 26,
+                    )
+                  : null,
             ),
-            Flexible(
+            const SizedBox(
+              width: 12,
+            ),
+            Expanded(
+              flex: 2,
               child: Text(
-                item.text,
+                widget.item.text,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 16,
@@ -56,6 +64,15 @@ class ItemFile extends StatelessWidget {
                 ),
               ),
             ),
+            (widget.item.text.contains("."))
+                ? Checkbox(
+                    value: check1,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        check1 = value;
+                      });
+                    })
+                : Container(),
           ],
         ),
       ),

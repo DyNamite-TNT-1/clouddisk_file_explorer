@@ -26,6 +26,24 @@ class FolderTreeBloc extends Bloc<FolderTreeEvent, FolderTreeState> {
         folders = folderList
             .map((folderJson) => Folder.fromJson(folderJson))
             .toList();
+        if (event.id == "") {
+          foldersRoot = folders;
+          addColorandIcon();
+        }
+        // else {
+        //   late var folder;
+        //   for (Item f in folders) {
+        //     for (Folder f2 in foldersRoot) {
+        //       if (f2.id == event.id) {
+        //         folder = f2;
+        //         break;
+        //       }
+        //     }
+        //     if (f is Folder) {
+
+        //     }
+        //   }
+        // }
         emit(FolderTreeLoaded(folders));
       }
     });

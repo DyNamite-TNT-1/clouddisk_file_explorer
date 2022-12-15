@@ -43,7 +43,6 @@ class _HomePageState extends State<HomePage> {
                 },
                 itemBuilder: ((context) {
                   return [
-                    popupMenuItem("New Folder"),
                     popupMenuItem("Sort"),
                   ];
                 }),
