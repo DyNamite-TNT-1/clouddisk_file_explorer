@@ -1,5 +1,3 @@
-import 'package:clouddisk_login_form/models/user.dart';
-import 'package:clouddisk_login_form/path.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final navKey = GlobalKey<NavigatorState>();
+  var path = "...";
   @override
   Widget build(BuildContext context) {
     void onSelected(BuildContext context, int value) {
@@ -55,7 +54,10 @@ class _HomePageState extends State<HomePage> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          listPaths.removeLast();
+          //xóa thằng cuối khi pop
+          var chars = path.split("/");
+          chars.removeLast();
+          path = chars.join("/");
           if (navKey.currentState != null) {
             if (navKey.currentState!.canPop()) {
               navKey.currentState!.pop();
@@ -67,25 +69,33 @@ class _HomePageState extends State<HomePage> {
         child: Navigator(
           key: navKey,
           onGenerateRoute: (settings) {
-            Widget page = const FolderScreen(folderId: "");
             switch (settings.name) {
               case "/":
                 return MaterialPageRoute(
                   settings: settings,
                   builder: (context) {
-                    return const FolderScreen(folderId: "");
+                    return const FolderScreen(
+                      folderId: "",
+                      currentPath: "...",
+                    );
                   },
                 );
               case "/folderScreen":
-                var arguments = settings.arguments as String;
+                var arguments = settings.arguments as Map;
+                var folderId = arguments["folderId"];
+                var currentPath = arguments["currentPath"];
+                path += currentPath;
                 return MaterialPageRoute(
                   settings: settings,
                   builder: (context) {
-                    return FolderScreen(folderId: arguments);
+                    return FolderScreen(
+                      folderId: folderId,
+                      currentPath: path,
+                    );
                   },
                 );
             }
-            return MaterialPageRoute(builder: (_) => page);
+            return null;
           },
         ),
       ),
