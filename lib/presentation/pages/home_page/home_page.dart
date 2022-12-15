@@ -1,3 +1,5 @@
+import 'package:clouddisk_login_form/models/user.dart';
+import 'package:clouddisk_login_form/path.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +14,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final navKey = GlobalKey<NavigatorState>();
-
   @override
   Widget build(BuildContext context) {
     void onSelected(BuildContext context, int value) {
@@ -54,6 +55,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: WillPopScope(
         onWillPop: () async {
+          listPaths.removeLast();
           if (navKey.currentState != null) {
             if (navKey.currentState!.canPop()) {
               navKey.currentState!.pop();

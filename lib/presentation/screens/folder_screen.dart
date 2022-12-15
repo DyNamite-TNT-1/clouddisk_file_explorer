@@ -1,5 +1,8 @@
 import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/components/list_items.dart';
+import 'package:clouddisk_login_form/main.dart';
+import 'package:clouddisk_login_form/models/user.dart';
+import 'package:clouddisk_login_form/path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +20,11 @@ class _FolderScreenState extends State<FolderScreen> {
   final FolderTreeBloc folderTreeBloc = FolderTreeBloc();
   @override
   void initState() {
-    print("FOLDER ID ${widget.folderId}");
+    //nếu đang ở folder gốc thì clear toàn bộ chặng đường đã đi và add lại folder gốc vào listPaths
+    if (widget.folderId == "") {
+      listPaths.clear();
+      listPaths.add("");
+    }
     folderTreeBloc.add(LoadEvent(widget.folderId));
     super.initState();
   }
@@ -50,9 +57,9 @@ class _FolderScreenState extends State<FolderScreen> {
                               const EdgeInsets.only(left: 4, top: 5, bottom: 5),
                           decoration:
                               BoxDecoration(color: Colors.cyan.shade300),
-                          child: const Text(
-                            "path",
-                            style: TextStyle(fontSize: 16),
+                          child: Text(
+                            path.truePath(listPaths),
+                            style: const TextStyle(fontSize: 16),
                           ),
                         ),
                   Expanded(

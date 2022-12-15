@@ -4,6 +4,7 @@ import 'package:clouddisk_login_form/api/api_header.dart';
 import 'package:clouddisk_login_form/api/api_url.dart';
 import 'package:clouddisk_login_form/api/request/login_req.dart';
 import 'package:clouddisk_login_form/api/response/login_res.dart';
+import 'package:clouddisk_login_form/main.dart';
 import 'package:clouddisk_login_form/models/user.dart';
 import 'package:equatable/equatable.dart';
 
@@ -23,6 +24,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (loginRes.success == true) {
           user.hmailKey = loginRes.hmailkey;
           user.session = loginRes.session;
+          prefs.setSession(user.session); //save session vào preference
+          prefs.setHmailKey(user.hmailKey); //save hmailKey vào preference
           emit(LoginSuccessLoaded(loginRes));
         } else {
           emit(const LoginFailLoaded("Không đăng nhập được"));
