@@ -36,7 +36,7 @@ class _ItemFileState extends State<ItemFile> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if (widget.item.text.contains(".")) {
+        if (widget.item.type == "file") {
           setState(() {
             isChecked = !isChecked;
             if (isChecked) {
@@ -104,7 +104,7 @@ class _ItemFileState extends State<ItemFile> {
                 ),
               ),
             ),
-            (widget.item.text.contains("."))
+            (widget.item.type == "file")
                 ? Checkbox(
                     value: isChecked,
                     onChanged: (bool? value) {

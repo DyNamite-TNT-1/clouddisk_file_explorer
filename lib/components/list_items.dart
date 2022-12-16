@@ -23,7 +23,7 @@ class _ListItemsState extends State<ListItems> {
             itemBuilder: (context, index) => ItemFile(
               item: widget.items[index],
               onPressed: (value) {
-                if (!widget.items[index].text.contains(".")) {
+                if (widget.items[index].type == "dir") {
                   Navigator.of(context).pushNamed("/folderScreen", arguments: {
                     "folderId": widget.items[index].id.toString(),
                     "currentPath": "/${widget.items[index].text}",

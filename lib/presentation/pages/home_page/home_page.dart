@@ -54,7 +54,6 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      // do something
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Đang gửi...")));
                     },
@@ -65,8 +64,7 @@ class _HomePageState extends State<HomePage> {
                   iconTheme: const IconThemeData(color: Colors.white),
                   textTheme: const TextTheme().apply(bodyColor: Colors.white)),
               child: PopupMenuButton<int>(
-                offset: const Offset(0, 50),
-                color: Colors.indigo.shade900,
+                color: Colors.indigo,
                 onSelected: (value) {
                   onSelected(context, value);
                 },
@@ -141,28 +139,11 @@ class _HomePageState extends State<HomePage> {
 
   PopupMenuItem<int> popupMenuItem(String content) {
     return PopupMenuItem<int>(
-      padding: const EdgeInsets.all(0),
+      padding: const EdgeInsets.only(left: 16),
       value: 0,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            const SizedBox(
-              width: 6,
-            ),
-            const Icon(
-              Icons.file_download_outlined,
-              size: 16,
-            ),
-            const SizedBox(
-              width: 6,
-            ),
-            Text(
-              content,
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
+      child: Text(
+        content,
+        style: const TextStyle(fontSize: 16),
       ),
     );
   }
