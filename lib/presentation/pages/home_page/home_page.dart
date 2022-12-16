@@ -55,7 +55,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Đang gửi...")));
+                        const SnackBar(
+                          content: Text("Đang gửi..."),
+                        ),
+                      );
                     },
                   )
                 : Container(),
