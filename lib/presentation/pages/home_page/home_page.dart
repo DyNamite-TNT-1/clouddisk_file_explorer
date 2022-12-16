@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final navKey = GlobalKey<NavigatorState>();
-  var path = "...";
+  var path = "";
   @override
   Widget build(BuildContext context) {
     void onSelected(BuildContext context, int value) {
@@ -32,7 +32,12 @@ class _HomePageState extends State<HomePage> {
           automaticallyImplyLeading: false, //turn off leading
           title: Row(
             children: [
-              const Text("Home"),
+              const Text(
+                "Home",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
               Text(
                 " ${mapChecked.isNotEmpty ? "(" : ""}${mapChecked.isNotEmpty ? mapChecked.length : ""}${mapChecked.isNotEmpty ? ")" : ""}",
                 style: const TextStyle(
@@ -42,6 +47,19 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           actions: [
+            mapChecked.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.send,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      // do something
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Đang gửi...")));
+                    },
+                  )
+                : Container(),
             Theme(
               data: Theme.of(context).copyWith(
                   iconTheme: const IconThemeData(color: Colors.white),
@@ -88,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                   builder: (context) {
                     return FolderScreen(
                       folderId: "",
-                      currentPath: "...",
+                      currentPath: "",
                       onPressed: () {
                         setState(() {});
                       },
@@ -100,6 +118,7 @@ class _HomePageState extends State<HomePage> {
                 var folderId = arguments["folderId"];
                 var currentPath = arguments["currentPath"];
                 path += currentPath;
+                if (path[0] == "/") path = path.substring(1);
                 return MaterialPageRoute(
                   settings: settings,
                   builder: (context) {

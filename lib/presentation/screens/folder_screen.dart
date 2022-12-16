@@ -49,10 +49,10 @@ class _FolderScreenState extends State<FolderScreen> {
                       ? Container()
                       : Container(
                           width: double.infinity,
-                          padding:
-                              const EdgeInsets.only(left: 4, top: 5, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              left: 12, top: 8, bottom: 8),
                           decoration:
-                              BoxDecoration(color: Colors.cyan.shade300),
+                              BoxDecoration(color: Colors.cyan.shade100),
                           child: Text(
                             widget.currentPath,
                             style: const TextStyle(fontSize: 16),

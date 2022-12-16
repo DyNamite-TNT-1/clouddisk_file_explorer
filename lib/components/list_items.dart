@@ -8,7 +8,7 @@ class ListItems extends StatefulWidget {
     required this.items,
     required this.onPressed,
   });
-  final List<Item> items;
+  final List<Folder> items;
   final VoidCallback onPressed;
   @override
   State<ListItems> createState() => _ListItemsState();

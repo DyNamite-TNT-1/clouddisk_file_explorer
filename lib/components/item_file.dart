@@ -3,7 +3,7 @@ import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
 
 class ItemFile extends StatefulWidget {
-  final Item item;
+  final Folder item;
   final Function(bool) onPressed;
   const ItemFile({
     super.key,
@@ -17,12 +17,17 @@ class ItemFile extends StatefulWidget {
 
 class _ItemFileState extends State<ItemFile> {
   bool isChecked = false;
+  String extension = "";
   @override
   void initState() {
     if (mapChecked[widget.item.id] == true) {
       setState(() {
         isChecked = true;
       });
+    }
+    if (widget.item.type == "file") {
+      final List<String> text = widget.item.text.split(".");
+      extension = text.last;
     }
     super.initState();
   }
@@ -48,27 +53,42 @@ class _ItemFileState extends State<ItemFile> {
         decoration: BoxDecoration(
             border: Border(
           bottom: BorderSide(
-            color: Colors.grey.shade400,
+            color: Colors.grey.shade300,
           ),
         )),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: widget.item is Folder
-                    ? ((widget.item as Folder).color)
-                    : null,
-              ),
-              child: widget.item is Folder
-                  ? Icon(
-                      (widget.item as Folder).icon,
+            widget.item.type == "dir"
+                ? Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: widget.item.color,
+                    ),
+                    child: Icon(
+                      widget.item.icon,
                       color: Colors.white,
                       size: 26,
-                    )
-                  : null,
-            ),
+                    ),
+                  )
+                : Container(
+                    // width: 55,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.grey.shade300,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        extension,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    )),
             const SizedBox(
               width: 12,
             ),

@@ -1,23 +1,23 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Item {
+abstract class Item {
   final String id;
   final String text;
-  Item(this.id, this.text);
+  final String type;
+  Item(this.id, this.text, this.type);
 }
 
 class File extends Item {
   String extension;
-  File(String id, String title, this.extension) : super(id, title);
+  File(String id, String title, String type, this.extension)
+      : super(id, title, type);
 }
 
 class Folder extends Item {
   Color? color;
   IconData? icon;
-  List<Item> children;
-  Folder(String id, String text, this.color, this.icon, this.children)
-      : super(id, text);
+  Folder(String id, String text, String type, this.color, this.icon)
+      : super(id, text, type);
 
   void addColorandIcon(Color color, IconData icon) {
     this.color = color;
@@ -28,17 +28,18 @@ class Folder extends Item {
     return Folder(
       json['id'] as String,
       json['text'] as String,
+      json['type'] as String,
       null,
       null,
-      [],
     );
   }
 
   @override
-  String toString() => 'Folder(id: $id, text: $text)';
+  String toString() => 'Folder(id: $id, text: $text, type: $type)';
 }
 
 List<Folder> folders = [];
+List<File> files = [];
 List<Folder> foldersRoot = [];
 
 void addColorandIcon() {
