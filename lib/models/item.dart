@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 
-abstract class Item {
+class Item {
   final String id;
   final String text;
   final String type;
-  Item(this.id, this.text, this.type);
-}
-
-class File extends Item {
-  String extension;
-  File(String id, String title, String type, this.extension)
-      : super(id, title, type);
+  final String regdate;
+  final String size;
+  Item(this.id, this.text, this.type, this.regdate, this.size);
 }
 
 class Folder extends Item {
   Color? color;
   IconData? icon;
-  Folder(String id, String text, String type, this.color, this.icon)
-      : super(id, text, type);
+  Folder(String id, String text, String type, String regdate, String size,
+      this.color, this.icon)
+      : super(id, text, type, regdate, size);
 
   void addColorandIcon(Color color, IconData icon) {
     this.color = color;
@@ -29,6 +26,8 @@ class Folder extends Item {
       json['id'] as String,
       json['text'] as String,
       json['type'] as String,
+      json['regdate'] as String,
+      json['size'] as String,
       null,
       null,
     );
@@ -39,7 +38,6 @@ class Folder extends Item {
 }
 
 List<Folder> folders = [];
-List<File> files = [];
 List<Folder> foldersRoot = [];
 
 void addColorandIcon() {

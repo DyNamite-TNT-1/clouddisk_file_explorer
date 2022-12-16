@@ -69,85 +69,82 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container(
-              decoration: const BoxDecoration(color: Colors.lightBlue),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(32, 86, 32, 0),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 1,
-                          ),
-                        ),
-                        child: const Text(
-                          'HANBIRO',
-                          style: TextStyle(
-                            fontSize: 12,
-                            letterSpacing: 20.0,
-                            color: Colors.white,
-                          ),
+          return Container(
+            decoration: const BoxDecoration(color: Colors.lightBlue),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(32, 86, 32, 0),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1,
                         ),
                       ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      const Text(
-                        'Cloud Disk',
+                      child: const Text(
+                        'HANBIRO',
                         style: TextStyle(
-                          fontSize: 48,
-                          letterSpacing: 2.0,
+                          fontSize: 12,
+                          letterSpacing: 20.0,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(
-                        height: 36,
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    const Text(
+                      'Cloud Disk',
+                      style: TextStyle(
+                        fontSize: 48,
+                        letterSpacing: 2.0,
+                        color: Colors.white,
                       ),
-                      AuthInput(
-                        domainController: domainController,
-                        label: "Domain",
-                        icon: Icons.language,
-                        keyboardType: TextInputType.name,
-                        isPassword: false,
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      AuthInput(
-                        domainController: idController,
-                        label: "ID",
-                        icon: Icons.person,
-                        keyboardType: TextInputType.name,
-                        isPassword: false,
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      AuthInput(
-                        domainController: passwordController,
-                        label: "Password",
-                        icon: Icons.lock,
-                        keyboardType: TextInputType.visiblePassword,
-                        isPassword: true,
-                      ),
-                      const SizedBox(
-                        height: 56,
-                      ),
-                      AuthButton(
-                        label: "Log In",
-                        onTap: () {
-                          BlocProvider.of<LoginBloc>(context)
-                              .add(ClickedLoginEvent(logInRequest));
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(
+                      height: 36,
+                    ),
+                    AuthInput(
+                      domainController: domainController,
+                      label: "Domain",
+                      icon: Icons.language,
+                      keyboardType: TextInputType.name,
+                      isPassword: false,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    AuthInput(
+                      domainController: idController,
+                      label: "ID",
+                      icon: Icons.person,
+                      keyboardType: TextInputType.name,
+                      isPassword: false,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    AuthInput(
+                      domainController: passwordController,
+                      label: "Password",
+                      icon: Icons.lock,
+                      keyboardType: TextInputType.visiblePassword,
+                      isPassword: true,
+                    ),
+                    const SizedBox(
+                      height: 56,
+                    ),
+                    AuthButton(
+                      label: "Log In",
+                      onTap: () {
+                        BlocProvider.of<LoginBloc>(context)
+                            .add(ClickedLoginEvent(logInRequest));
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),

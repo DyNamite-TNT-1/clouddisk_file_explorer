@@ -1,4 +1,5 @@
 import 'package:clouddisk_login_form/global_variable/global_variable.dart';
+import 'package:clouddisk_login_form/icons/app_icons.dart';
 import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class ItemFile extends StatefulWidget {
 
 class _ItemFileState extends State<ItemFile> {
   bool isChecked = false;
-  String extension = "";
+  late IconData iconData;
   @override
   void initState() {
     if (mapChecked[widget.item.id] == true) {
@@ -27,7 +28,46 @@ class _ItemFileState extends State<ItemFile> {
     }
     if (widget.item.type == "file") {
       final List<String> text = widget.item.text.split(".");
-      extension = text.last;
+      switch (text.last) {
+        case "doc":
+          iconData = AppIcon.fileWord;
+          break;
+        case "docx":
+          iconData = AppIcon.fileWord;
+          break;
+        case "ppt":
+          iconData = AppIcon.filePowerpoint;
+          break;
+        case "pptx":
+          iconData = AppIcon.filePowerpoint;
+          break;
+        case "xls":
+          iconData = AppIcon.fileExcel;
+          break;
+        case "xlsx":
+          iconData = AppIcon.fileExcel;
+          break;
+        case "zip":
+          iconData = AppIcon.fileArchive;
+          break;
+        case "pdf":
+          iconData = AppIcon.filePdf;
+          break;
+        case "mp3":
+          iconData = AppIcon.fileAudio;
+          break;
+        case "mp4":
+          iconData = AppIcon.fileVideo;
+          break;
+        case "jpg":
+          iconData = AppIcon.fileImage;
+          break;
+        case "png":
+          iconData = AppIcon.fileImage;
+          break;
+        default:
+          iconData = AppIcon.docText;
+      }
     }
     super.initState();
   }
@@ -68,7 +108,7 @@ class _ItemFileState extends State<ItemFile> {
                     child: Icon(
                       widget.item.icon,
                       color: Colors.white,
-                      size: 26,
+                      size: 24,
                     ),
                   )
                 : Container(
@@ -76,18 +116,15 @@ class _ItemFileState extends State<ItemFile> {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      color: Colors.grey.shade300,
+                      color: Colors.grey.shade400,
                       borderRadius: const BorderRadius.all(
                         Radius.circular(5),
                       ),
                     ),
-                    child: Center(
-                      child: Text(
-                        extension,
-                        style: const TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
+                    child: Icon(
+                      iconData,
+                      color: Colors.white,
+                      size: 24,
                     )),
             const SizedBox(
               width: 12,
