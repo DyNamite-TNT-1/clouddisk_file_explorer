@@ -1,3 +1,4 @@
+import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,17 @@ class _HomePageState extends State<HomePage> {
         child: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false, //turn off leading
-          title: const Text("Home"),
+          title: Row(
+            children: [
+              const Text("Home"),
+              Text(
+                " ${mapChecked.isNotEmpty ? "(" : ""}${mapChecked.isNotEmpty ? mapChecked.length : ""}${mapChecked.isNotEmpty ? ")" : ""}",
+                style: const TextStyle(
+                  color: Colors.amberAccent,
+                ),
+              ),
+            ],
+          ),
           actions: [
             Theme(
               data: Theme.of(context).copyWith(
@@ -53,10 +64,12 @@ class _HomePageState extends State<HomePage> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          //xóa thằng cuối khi pop
-          var chars = path.split("/");
-          chars.removeLast();
-          path = chars.join("/");
+          setState(() {
+            //xóa thằng cuối khi pop
+            var chars = path.split("/");
+            chars.removeLast();
+            path = chars.join("/");
+          });
           if (navKey.currentState != null) {
             if (navKey.currentState!.canPop()) {
               navKey.currentState!.pop();
@@ -73,9 +86,12 @@ class _HomePageState extends State<HomePage> {
                 return MaterialPageRoute(
                   settings: settings,
                   builder: (context) {
-                    return const FolderScreen(
+                    return FolderScreen(
                       folderId: "",
                       currentPath: "...",
+                      onPressed: () {
+                        setState(() {});
+                      },
                     );
                   },
                 );
@@ -90,6 +106,9 @@ class _HomePageState extends State<HomePage> {
                     return FolderScreen(
                       folderId: folderId,
                       currentPath: path,
+                      onPressed: () {
+                        setState(() {});
+                      },
                     );
                   },
                 );

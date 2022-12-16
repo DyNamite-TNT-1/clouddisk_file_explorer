@@ -8,9 +8,11 @@ class FolderScreen extends StatefulWidget {
     super.key,
     required this.folderId,
     required this.currentPath,
+    required this.onPressed,
   });
   final String folderId;
   final String currentPath;
+  final VoidCallback onPressed;
   @override
   State<FolderScreen> createState() => _FolderScreenState();
 }
@@ -57,7 +59,12 @@ class _FolderScreenState extends State<FolderScreen> {
                           ),
                         ),
                   Expanded(
-                    child: ListItems(items: state.items),
+                    child: ListItems(
+                      items: state.items,
+                      onPressed: () {
+                        widget.onPressed();
+                      },
+                    ),
                   ),
                 ],
               ),

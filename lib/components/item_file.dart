@@ -1,10 +1,10 @@
+import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
 
 class ItemFile extends StatefulWidget {
   final Item item;
-  final VoidCallback onPressed;
-
+  final Function(bool) onPressed;
   const ItemFile({
     super.key,
     required this.item,
@@ -16,12 +16,32 @@ class ItemFile extends StatefulWidget {
 }
 
 class _ItemFileState extends State<ItemFile> {
-  bool? check1 = false;
+  bool isChecked = false;
+  @override
+  void initState() {
+    if (mapChecked[widget.item.id] == true) {
+      setState(() {
+        isChecked = true;
+      });
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        widget.onPressed();
+        if (widget.item.text.contains(".")) {
+          setState(() {
+            isChecked = !isChecked;
+            if (isChecked) {
+              mapChecked.addAll({widget.item.id: true});
+            } else {
+              mapChecked.remove(widget.item.id);
+            }
+          });
+        }
+        widget.onPressed(isChecked);
       },
       child: Container(
         padding: const EdgeInsets.only(top: 10, bottom: 10, left: 12),
@@ -66,11 +86,17 @@ class _ItemFileState extends State<ItemFile> {
             ),
             (widget.item.text.contains("."))
                 ? Checkbox(
-                    value: check1,
+                    value: isChecked,
                     onChanged: (bool? value) {
                       setState(() {
-                        check1 = value;
+                        isChecked = value!;
+                        if (isChecked) {
+                          mapChecked.addAll({widget.item.id: true});
+                        } else {
+                          mapChecked.remove(widget.item.id);
+                        }
                       });
+                      widget.onPressed(isChecked);
                     })
                 : Container(),
           ],

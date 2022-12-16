@@ -3,9 +3,13 @@ import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
 
 class ListItems extends StatefulWidget {
+  const ListItems({
+    super.key,
+    required this.items,
+    required this.onPressed,
+  });
   final List<Item> items;
-  const ListItems({super.key, required this.items});
-
+  final VoidCallback onPressed;
   @override
   State<ListItems> createState() => _ListItemsState();
 }
@@ -18,14 +22,14 @@ class _ListItemsState extends State<ListItems> {
             itemCount: widget.items.length,
             itemBuilder: (context, index) => ItemFile(
               item: widget.items[index],
-              onPressed: () {
+              onPressed: (value) {
                 if (!widget.items[index].text.contains(".")) {
                   Navigator.of(context).pushNamed("/folderScreen", arguments: {
                     "folderId": widget.items[index].id.toString(),
                     "currentPath": "/${widget.items[index].text}",
                   });
                 } else {
-                  print("it's file");
+                  widget.onPressed();
                 }
               },
             ),
