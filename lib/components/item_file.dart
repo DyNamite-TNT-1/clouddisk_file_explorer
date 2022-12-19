@@ -18,14 +18,32 @@ class ItemFile extends StatefulWidget {
 
 class _ItemFileState extends State<ItemFile> {
   bool isChecked = false;
+  bool hasThumbnail = false;
   late IconData iconData;
+  late Widget image;
+  Future getImage(String ext) async {
+    image = Image.network(
+      widget.item.buildThumbnail(ext),
+      height: 40,
+    );
+  }
+
   @override
   void initState() {
+    //check thumbnail  != "" thi lay thubmnail
+    if (widget.item.buildThumbnail(widget.item.ext) != "") {
+      getImage(widget.item.ext).then((_) {
+        setState(() {
+          hasThumbnail = true;
+        });
+      });
+    }
     if (mapChecked[widget.item.id] == true) {
       setState(() {
         isChecked = true;
       });
     }
+    //gan icon dua vao extension
     if (widget.item.type == "file") {
       final List<String> text = widget.item.text.split(".");
       switch (text.last) {
@@ -98,34 +116,37 @@ class _ItemFileState extends State<ItemFile> {
         )),
         child: Row(
           children: [
-            widget.item.type == "dir"
-                ? Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: widget.item.color,
-                    ),
-                    child: Icon(
-                      widget.item.icon,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  )
-                : Container(
-                    // width: 55,
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Colors.grey.shade400,
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                    child: Icon(
-                      iconData,
-                      color: Colors.white,
-                      size: 24,
-                    )),
+            if (widget.item.type == "dir")
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: widget.item.color,
+                ),
+                child: Icon(
+                  widget.item.icon,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              )
+            else if (!hasThumbnail)
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color: Colors.grey.shade400,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                ),
+                child: Icon(
+                  iconData,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              )
+            else
+              image,
             const SizedBox(
               width: 12,
             ),

@@ -9,12 +9,14 @@ class Item {
   final String type;
   final String size;
   final String regdate;
+  final String ext;
   Item(
     this.id,
     this.text,
     this.type,
     this.size,
     this.regdate,
+    this.ext,
   );
 }
 
@@ -22,8 +24,8 @@ class Folder extends Item {
   Color? color;
   IconData? icon;
   Folder(String id, String text, String type, String size, String regdate,
-      this.color, this.icon)
-      : super(id, text, type, size, regdate);
+      String ext, this.color, this.icon)
+      : super(id, text, type, size, regdate, ext);
 
   void addColorandIcon(Color color, IconData icon) {
     this.color = color;
@@ -47,6 +49,11 @@ class Folder extends Item {
     return dateString;
   }
 
+  String buildThumbnail(String ext) {
+    if (ext[0] != "/") return "";
+    return "https://groupware57.hanbiro.net${ext}_76x76.png";
+  }
+
   factory Folder.fromJson(Map<String, dynamic> json) {
     return Folder(
       json["id"] as String,
@@ -54,6 +61,7 @@ class Folder extends Item {
       json["type"] as String,
       "${json["size"]}", //vì api trả về nếu >0 => String, = 0 thì là int
       "${json["regdate"]}", //vì api trả về nếu >0 => String, = 0 thì là int
+      "${json["ext"]}",
       null,
       null,
     );
