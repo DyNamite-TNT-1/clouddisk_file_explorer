@@ -22,7 +22,6 @@ class AuthApi {
       ),
     );
     var responseData = response.data;
-
     return responseData;
   }
 }

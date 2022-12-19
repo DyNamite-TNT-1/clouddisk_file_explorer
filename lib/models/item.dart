@@ -1,40 +1,66 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Item {
   final String id;
   final String text;
   final String type;
-  final String regdate;
   final String size;
-  Item(this.id, this.text, this.type, this.regdate, this.size);
+  final String regdate;
+  Item(
+    this.id,
+    this.text,
+    this.type,
+    this.size,
+    this.regdate,
+  );
 }
 
 class Folder extends Item {
   Color? color;
   IconData? icon;
-  Folder(String id, String text, String type, String regdate, String size,
+  Folder(String id, String text, String type, String size, String regdate,
       this.color, this.icon)
-      : super(id, text, type, regdate, size);
+      : super(id, text, type, size, regdate);
 
   void addColorandIcon(Color color, IconData icon) {
     this.color = color;
     this.icon = icon;
   }
 
+  String formatBytes(String size, int decimals) {
+    //decimals: làm tròn tới decimals số thập phân
+    int bytes = int.parse(size);
+    if (bytes <= 0) return "0 B";
+    const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    var i = (log(bytes) / log(1024)).floor();
+    return '${(bytes / pow(1024, i)).toStringAsFixed(decimals)} ${suffixes[i]}';
+  }
+
+  String formatDates(String regdate) {
+    if (regdate == "0") return "";
+    int milisecond = int.parse(regdate);
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(milisecond * 1000);
+    String dateString = DateFormat("yyyy/MM/dd").format(date);
+    return dateString;
+  }
+
   factory Folder.fromJson(Map<String, dynamic> json) {
     return Folder(
-      json['id'] as String,
-      json['text'] as String,
-      json['type'] as String,
-      json['regdate'] as String,
-      json['size'] as String,
+      json["id"] as String,
+      json["text"] as String,
+      json["type"] as String,
+      "${json["size"]}", //vì api trả về nếu >0 => String, = 0 thì là int
+      "${json["regdate"]}", //vì api trả về nếu >0 => String, = 0 thì là int
       null,
       null,
     );
   }
 
   @override
-  String toString() => 'Folder(id: $id, text: $text, type: $type)';
+  String toString() => "Folder(id: $id, text: $text, type: $type)";
 }
 
 List<Folder> folders = [];

@@ -1,5 +1,5 @@
 import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
-import 'package:clouddisk_login_form/bloc/login/bloc/login_bloc.dart';
+import 'package:clouddisk_login_form/bloc/login_bloc/login_bloc.dart';
 import 'package:clouddisk_login_form/models/user.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/home_page.dart';
 import 'package:clouddisk_login_form/presentation/pages/login_page/login_screen.dart';

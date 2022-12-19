@@ -1,14 +1,13 @@
 // ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:clouddisk_login_form/api/api_header.dart';
+import 'package:clouddisk_login_form/api/api_service.dart';
 import 'package:clouddisk_login_form/api/api_url.dart';
 import 'package:clouddisk_login_form/api/request/login_req.dart';
 import 'package:clouddisk_login_form/api/response/login_res.dart';
 import 'package:clouddisk_login_form/main.dart';
 import 'package:clouddisk_login_form/models/user.dart';
 import 'package:equatable/equatable.dart';
-
-import 'package:clouddisk_login_form/api/api_service.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
