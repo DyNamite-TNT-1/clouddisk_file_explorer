@@ -14,11 +14,120 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final navKey = GlobalKey<NavigatorState>();
   var path = "";
+  int selectedIndex = 0;
+  int selectedRadioTile = 0;
+  setSelectedRadioTile(int val) {
+    setState(() {
+      selectedRadioTile = val;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    Future pushDialog() {
+      return showDialog(
+          useRootNavigator: false,
+          context: context,
+          builder: (context) {
+            int selectedRadio = 0;
+            return AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              content: SizedBox(
+                width: 170,
+                height: 250,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12, left: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Sort Type",
+                            style: TextStyle(
+                              color: Colors.black54,
+                            ),
+                          ),
+                          // StatefulBuilder(builder:
+                          //     (BuildContext context, StateSetter setState) {
+                          //   List<String> list = ["Size", "File Name", "Date"];
+                          //   return Column(
+                          //     mainAxisSize: MainAxisSize.min,
+                          //     children: List<Widget>.generate(3, (int index) {
+                          //       return Row(
+                          //         children: [
+                          //           Radio<int>(
+                          //             value: index,
+                          //             groupValue: selectedRadio,
+                          //             onChanged: (value) {
+                          //               setState(() => selectedRadio = value!);
+                          //             },
+                          //           ),
+                          //           const SizedBox(width: 8),
+                          //           Text(list[index]),
+                          //         ],
+                          //       );
+                          //     }),
+                          //   );
+                          // }),
+                          const Text(
+                            "Order",
+                            style: TextStyle(
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.black54,
+                        size: 36,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey.shade300,
+                    padding: EdgeInsets.zero,
+                    fixedSize: const Size(135, 40),
+                  ),
+                  child: const Text(
+                    "SAVE AS DEFAULT",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey.shade300,
+                    padding: EdgeInsets.zero,
+                    fixedSize: const Size(135, 40),
+                  ),
+                  child: const Text(
+                    "SAVE",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+              ],
+            );
+          });
+    }
+
     void onSelected(BuildContext context, int value) {
       switch (value) {
         case 0:
+          pushDialog();
           break;
         default:
       }
