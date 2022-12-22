@@ -19,6 +19,7 @@ class FolderScreen extends StatefulWidget {
 
 class _FolderScreenState extends State<FolderScreen> {
   final FolderTreeBloc folderTreeBloc = FolderTreeBloc();
+
   @override
   void initState() {
     folderTreeBloc.add(LoadEvent(widget.folderId));
@@ -37,27 +38,26 @@ class _FolderScreenState extends State<FolderScreen> {
       create: (context) => folderTreeBloc,
       child: BlocBuilder<FolderTreeBloc, FolderTreeState>(
         builder: (context, state) {
-          if (state is FolderTreeLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is FolderTreeLoaded) {
-            return Scaffold(
-              body: Column(
-                children: [
-                  widget.folderId == ""
-                      ? Container()
-                      : Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.only(
-                              left: 12, top: 8, bottom: 8),
-                          decoration:
-                              BoxDecoration(color: Colors.cyan.shade100),
-                          child: Text(
-                            widget.currentPath,
-                            style: const TextStyle(fontSize: 16),
-                          ),
+          return Scaffold(
+            body: Column(
+              children: [
+                widget.folderId == ""
+                    ? Container()
+                    : Container(
+                        width: double.infinity,
+                        padding:
+                            const EdgeInsets.only(left: 12, top: 8, bottom: 8),
+                        decoration: BoxDecoration(color: Colors.cyan.shade100),
+                        child: Text(
+                          widget.currentPath,
+                          style: const TextStyle(fontSize: 16),
                         ),
+                      ),
+                if (state is FolderTreeLoading)
+                  const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                else if (state is FolderTreeLoaded)
                   Expanded(
                     child: ListItems(
                       items: state.items,
@@ -66,11 +66,9 @@ class _FolderScreenState extends State<FolderScreen> {
                       },
                     ),
                   ),
-                ],
-              ),
-            );
-          }
-          return Container();
+              ],
+            ),
+          );
         },
       ),
     );

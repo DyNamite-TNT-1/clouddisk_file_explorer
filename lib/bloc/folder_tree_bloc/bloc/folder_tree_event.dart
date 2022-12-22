@@ -15,6 +15,11 @@ class LoadEvent extends FolderTreeEvent {
   List<Object> get props => [id];
 }
 
-class BackEvent extends FolderTreeEvent {
-  const BackEvent();
+class SortEvent extends FolderTreeEvent {
+  final String id;
+  final String sort;
+  final String order;
+  const SortEvent(this.id, this.sort, this.order);
+  @override
+  List<Object> get props => [id, sort, order];
 }

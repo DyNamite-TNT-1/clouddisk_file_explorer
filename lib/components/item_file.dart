@@ -1,5 +1,4 @@
 import 'package:clouddisk_login_form/global_variable/global_variable.dart';
-import 'package:clouddisk_login_form/icons/app_icons.dart';
 import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +18,6 @@ class ItemFile extends StatefulWidget {
 class _ItemFileState extends State<ItemFile> {
   bool isChecked = false;
   bool hasThumbnail = false;
-  late IconData iconData;
   late Widget image;
   Future getImage(String ext) async {
     image = Image.network(
@@ -29,13 +27,16 @@ class _ItemFileState extends State<ItemFile> {
   }
 
   @override
-  void initState() {
-    //check thumbnail  != "" thi lay thubmnail
+  Widget build(BuildContext context) {
     if (widget.item.buildThumbnail(widget.item.ext) != "") {
       getImage(widget.item.ext).then((_) {
         setState(() {
           hasThumbnail = true;
         });
+      });
+    } else {
+      setState(() {
+        hasThumbnail = false;
       });
     }
     if (mapChecked[widget.item.id] == true) {
@@ -43,55 +44,6 @@ class _ItemFileState extends State<ItemFile> {
         isChecked = true;
       });
     }
-    //gan icon dua vao extension
-    if (widget.item.type == "file") {
-      final List<String> text = widget.item.text.split(".");
-      switch (text.last) {
-        case "doc":
-          iconData = AppIcon.fileWord;
-          break;
-        case "docx":
-          iconData = AppIcon.fileWord;
-          break;
-        case "ppt":
-          iconData = AppIcon.filePowerpoint;
-          break;
-        case "pptx":
-          iconData = AppIcon.filePowerpoint;
-          break;
-        case "xls":
-          iconData = AppIcon.fileExcel;
-          break;
-        case "xlsx":
-          iconData = AppIcon.fileExcel;
-          break;
-        case "zip":
-          iconData = AppIcon.fileArchive;
-          break;
-        case "pdf":
-          iconData = AppIcon.filePdf;
-          break;
-        case "mp3":
-          iconData = AppIcon.fileAudio;
-          break;
-        case "mp4":
-          iconData = AppIcon.fileVideo;
-          break;
-        case "jpg":
-          iconData = AppIcon.fileImage;
-          break;
-        case "png":
-          iconData = AppIcon.fileImage;
-          break;
-        default:
-          iconData = AppIcon.docText;
-      }
-    }
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         if (widget.item.type == "file") {
@@ -109,44 +61,49 @@ class _ItemFileState extends State<ItemFile> {
       child: Container(
         padding: const EdgeInsets.only(top: 10, bottom: 10, left: 12),
         decoration: BoxDecoration(
-            border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.shade300,
+          border: Border(
+            bottom: BorderSide(
+              color: Colors.grey.shade300,
+            ),
           ),
-        )),
+        ),
         child: Row(
           children: [
-            if (widget.item.type == "dir")
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: widget.item.color,
-                ),
-                child: Icon(
-                  widget.item.icon,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              )
-            else if (!hasThumbnail)
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: Colors.grey.shade400,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(5),
+            //Stack để khi load thumbnail xong sẽ đè lên icon, không bị xấu UI. Không dùng stack thì sẽ gây hiện tượng thụt vào thụt ra của content
+            Stack(
+              children: [
+                if (widget.item.type == "dir")
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: widget.item.color,
+                    ),
+                    child: Icon(
+                      widget.item.icon,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  )
+                else
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.grey.shade400,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                    child: Icon(
+                      widget.item.icon,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                   ),
-                ),
-                child: Icon(
-                  iconData,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              )
-            else
-              image,
+                if (hasThumbnail) image,
+              ],
+            ),
             const SizedBox(
               width: 12,
             ),

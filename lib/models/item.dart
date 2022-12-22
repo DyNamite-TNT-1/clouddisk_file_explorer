@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:clouddisk_login_form/icons/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -28,8 +29,52 @@ class Folder extends Item {
       : super(id, text, type, size, regdate, ext);
 
   void addColorandIcon(Color color, IconData icon) {
-    this.color = color;
-    this.icon = icon;
+    if (type == "file") {
+      final List<String> texts = text.split(".");
+      switch (texts.last) {
+        case "doc":
+          this.icon = AppIcon.fileWord;
+          break;
+        case "docx":
+          this.icon = AppIcon.fileWord;
+          break;
+        case "ppt":
+          this.icon = AppIcon.filePowerpoint;
+          break;
+        case "pptx":
+          this.icon = AppIcon.filePowerpoint;
+          break;
+        case "xls":
+          this.icon = AppIcon.fileExcel;
+          break;
+        case "xlsx":
+          this.icon = AppIcon.fileExcel;
+          break;
+        case "zip":
+          this.icon = AppIcon.fileArchive;
+          break;
+        case "pdf":
+          this.icon = AppIcon.filePdf;
+          break;
+        case "mp3":
+          this.icon = AppIcon.fileAudio;
+          break;
+        case "mp4":
+          this.icon = AppIcon.fileVideo;
+          break;
+        case "jpg":
+          this.icon = AppIcon.fileImage;
+          break;
+        case "png":
+          this.icon = AppIcon.fileImage;
+          break;
+        default:
+          this.icon = AppIcon.docText;
+      }
+    } else {
+      this.color = color;
+      this.icon = icon;
+    }
   }
 
   String formatBytes(String size, int decimals) {
@@ -68,10 +113,12 @@ class Folder extends Item {
   }
 
   @override
-  String toString() => "Folder(id: $id, text: $text, type: $type)";
+  String toString() =>
+      "Folder(id: $id, text: $text, type: $type, size: $size, regdate: $regdate, ext: $ext, icon: $icon, color: $color)";
 }
 
 List<Folder> folders = [];
+List<Folder> preFolders = [];
 List<Folder> foldersRoot = [];
 
 void addColorandIcon() {
@@ -84,3 +131,20 @@ void addColorandIcon() {
   foldersRoot[6].addColorandIcon(Colors.teal.shade700, Icons.source);
   foldersRoot[7].addColorandIcon(Colors.red.shade900, Icons.delete_outline);
 }
+
+// void sortListItem(List<Folder> folders, int sortType, int order) {
+//   if (sortType == 0) {
+//     if (order == 0) {
+//       folders.sort((a, b) {
+//         return int.parse(a.size).compareTo(int.parse(b.size));
+//       });
+//       // print(folders);
+//     }
+//     if (order == 1) {
+//       folders.sort((a, b) {
+//         return int.parse(b.size).compareTo(int.parse(a.size));
+//       });
+//       // print(folders);
+//     }
+//   }
+// }

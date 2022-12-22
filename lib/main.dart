@@ -38,6 +38,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final LoginBloc loginBloc = LoginBloc();
+
   bool hasCookie = true;
   var session = "";
   var hmailkey = "";
