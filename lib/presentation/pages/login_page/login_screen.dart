@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 36,
                     ),
                     AuthInput(
-                      domainController: domainController,
+                      controller: domainController,
                       label: "Domain",
                       icon: Icons.language,
                       keyboardType: TextInputType.name,
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 8,
                     ),
                     AuthInput(
-                      domainController: idController,
+                      controller: idController,
                       label: "ID",
                       icon: Icons.person,
                       keyboardType: TextInputType.name,
@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 8,
                     ),
                     AuthInput(
-                      domainController: passwordController,
+                      controller: passwordController,
                       label: "Password",
                       icon: Icons.lock,
                       keyboardType: TextInputType.visiblePassword,

@@ -78,8 +78,10 @@ class _FolderScreenState extends State<FolderScreen> {
                           ),
                         ),
                   if (state is FolderTreeLoading)
-                    const Center(
-                      child: CircularProgressIndicator(),
+                    const Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     )
                   else if (state is FolderTreeLoaded)
                     Expanded(

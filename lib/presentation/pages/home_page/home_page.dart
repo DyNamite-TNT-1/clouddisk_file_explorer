@@ -1,3 +1,4 @@
+import 'package:clouddisk_login_form/components/list_radio.dart';
 import 'package:flutter/material.dart';
 import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
@@ -13,16 +14,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final navKey = GlobalKey<NavigatorState>();
+  bool canPop = false;
   var path = "";
   int initialValue1 = 0;
   int initialValue2 = 0;
+  Future onSend(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return const SendDialog();
+        });
+  }
+
   void onSelected(BuildContext context, int value) {
     switch (value) {
       case 0:
         showDialog(
           context: context,
           builder: (context) {
-            return MyDialog(
+            return SortDialog(
               onValueChange: (int value1, int value2) {
                 initialValue1 = value1;
                 initialValue2 = value2;
@@ -79,11 +89,38 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        automaticallyImplyLeading: false, //turn off leading
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            SizedBox(
+              height: 28.0,
+              width: 28.0,
+              child: IconButton(
+                padding: const EdgeInsets.all(0),
+                onPressed: () {
+                  setState(() {
+                    //xóa thằng cuối khi pop
+                    var chars = path.split("/");
+                    chars.removeLast();
+                    path = chars.join("/");
+                  });
+                  if (navKey.currentState != null) {
+                    if (navKey.currentState!.canPop()) {
+                      navKey.currentState!.pop();
+                    }
+                  }
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
             const Text(
-              "Home",
+              "CloudDisk",
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -104,29 +141,28 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Đang gửi..."),
-                      ),
-                    );
+                    onSend(context);
                   },
                 )
               : Container(),
-          Theme(
-            data: Theme.of(context).copyWith(
-                iconTheme: const IconThemeData(color: Colors.white),
-                textTheme: const TextTheme().apply(bodyColor: Colors.white)),
-            child: PopupMenuButton<int>(
-              color: Colors.indigo,
-              onSelected: (value) {
-                onSelected(context, value);
-              },
-              itemBuilder: ((context) {
-                return [
-                  popupMenuItem("Sort"),
-                ];
-              }),
+          PopupMenuButton<int>(
+            color: Colors.white,
+            constraints: const BoxConstraints(
+              minWidth: 150,
             ),
+            padding: const EdgeInsets.all(0),
+            icon: const Icon(
+              Icons.more_vert,
+              color: Colors.white,
+            ),
+            onSelected: (value) {
+              onSelected(context, value);
+            },
+            itemBuilder: ((context) {
+              return [
+                popupMenuItem("Sort"),
+              ];
+            }),
           ),
         ],
       ),
@@ -197,72 +233,14 @@ class _HomePageState extends State<HomePage> {
       value: 0,
       child: Text(
         content,
-        style: const TextStyle(fontSize: 16),
+        style: const TextStyle(fontSize: 16, color: Colors.black),
       ),
     );
   }
 }
 
-class RadioList extends StatefulWidget {
-  const RadioList({
-    Key? key,
-    required this.listItem,
-    required this.onTap,
-    required this.initValue,
-  }) : super(key: key);
-  final List<String> listItem;
-  final void Function(int) onTap;
-  final int initValue;
-  @override
-  State<RadioList> createState() => _RadioListState();
-}
-
-class _RadioListState extends State<RadioList> {
-  int selectedRadio = 0;
-  @override
-  void initState() {
-    selectedRadio = widget.initValue;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: widget.listItem.map((item) {
-        return InkWell(
-          onTap: () {
-            setState(() {
-              selectedRadio = widget.listItem.indexOf(item);
-              widget.onTap(selectedRadio);
-            });
-          },
-          child: Row(
-            children: [
-              Radio(
-                value: widget.listItem.indexOf(item),
-                groupValue: selectedRadio,
-                onChanged: (value) {
-                  setState(() {
-                    selectedRadio = value!;
-                    widget.onTap(selectedRadio);
-                  });
-                },
-              ),
-              SizedBox(
-                width: 180,
-                child: Text(item),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
-    );
-  }
-}
-
-class MyDialog extends StatefulWidget {
-  const MyDialog({
+class SortDialog extends StatefulWidget {
+  const SortDialog({
     Key? key,
     required this.onValueChange,
     required this.onSave,
@@ -277,10 +255,10 @@ class MyDialog extends StatefulWidget {
   final int initValue2;
 
   @override
-  State<MyDialog> createState() => _MyDialogState();
+  State<SortDialog> createState() => _SortDialogState();
 }
 
-class _MyDialogState extends State<MyDialog> {
+class _SortDialogState extends State<SortDialog> {
   int sortType = 0;
   int order = 0;
   @override
@@ -372,6 +350,93 @@ class _MyDialogState extends State<MyDialog> {
           child: const Text(
             "SAVE",
             style: TextStyle(fontSize: 12),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SendDialog extends StatefulWidget {
+  const SendDialog({super.key});
+
+  @override
+  State<SendDialog> createState() => _SendDialogState();
+}
+
+class _SendDialogState extends State<SendDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      // contentPadding: EdgeInsets.zero,
+      content: SizedBox(
+        // width: 260,
+        height: 200,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 12,
+            ),
+            const Text(
+              "Cloud Disk",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            const Text(
+              "Expired Date (NOT less than current date)",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            const Text(
+              "Download count (greate than 0)",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+              ),
+            ),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              style: const TextStyle(
+                fontSize: 18,
+              ),
+              initialValue: "100",
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.only(bottom: -20),
+                hintText: "100",
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text(
+            "CANCEL",
+            style: TextStyle(fontSize: 14),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text(
+            "OK",
+            style: TextStyle(fontSize: 14),
           ),
         ),
       ],

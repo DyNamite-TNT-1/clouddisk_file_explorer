@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class AuthInput extends StatefulWidget {
   const AuthInput({
     Key? key,
-    required this.domainController,
+    required this.controller,
     required this.label,
     required this.icon,
     required this.keyboardType,
     required this.isPassword,
   }) : super(key: key);
 
-  final TextEditingController domainController;
+  final TextEditingController controller;
   final String label;
   final IconData icon;
   final TextInputType keyboardType;
@@ -47,7 +47,7 @@ class _AuthInputState extends State<AuthInput> {
           ),
           Expanded(
             child: TextFormField(
-              controller: widget.domainController,
+              controller: widget.controller,
               keyboardType: widget.keyboardType,
               obscureText: isVisible,
               style: const TextStyle(
