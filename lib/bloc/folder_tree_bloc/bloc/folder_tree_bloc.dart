@@ -19,7 +19,7 @@ class FolderTreeBloc extends Bloc<FolderTreeEvent, FolderTreeState> {
   FolderTreeBloc() : super(FolderTreeInitial()) {
     on<FolderTreeEvent>((event, emit) async {
       if (event is LoadEvent) {
-        // if (folders.isNotEmpty) preFolders = folders;
+        print(1);
         folders = [];
         emit(FolderTreeLoading());
         final resp =
@@ -36,9 +36,12 @@ class FolderTreeBloc extends Bloc<FolderTreeEvent, FolderTreeState> {
             element.addColorandIcon(Colors.indigo, Icons.folder);
           }
         }
+        isClickedDefault = false;
         emit(FolderTreeLoaded(folders));
       }
       if (event is SortEvent) {
+        print(2);
+
         folders = [];
         emit(FolderTreeLoading());
         final resp = await api.get(
@@ -56,6 +59,8 @@ class FolderTreeBloc extends Bloc<FolderTreeEvent, FolderTreeState> {
             element.addColorandIcon(Colors.indigo, Icons.folder);
           }
         }
+        // sau khi sort sẽ cho isSort = false để qua màn hình khác không bị auto sort
+        isSort = false;
         emit(FolderTreeLoaded(folders));
       }
     });

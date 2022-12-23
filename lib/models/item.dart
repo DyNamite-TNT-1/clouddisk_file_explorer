@@ -132,19 +132,4 @@ void addColorandIcon() {
   foldersRoot[7].addColorandIcon(Colors.red.shade900, Icons.delete_outline);
 }
 
-// void sortListItem(List<Folder> folders, int sortType, int order) {
-//   if (sortType == 0) {
-//     if (order == 0) {
-//       folders.sort((a, b) {
-//         return int.parse(a.size).compareTo(int.parse(b.size));
-//       });
-//       // print(folders);
-//     }
-//     if (order == 1) {
-//       folders.sort((a, b) {
-//         return int.parse(b.size).compareTo(int.parse(a.size));
-//       });
-//       // print(folders);
-//     }
-//   }
-// }
+Map<String, List<Folder>> mapListFolder = {};

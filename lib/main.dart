@@ -1,4 +1,3 @@
-import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/bloc/login_bloc/login_bloc.dart';
 import 'package:clouddisk_login_form/models/user.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/home_page.dart';
@@ -81,9 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
           BlocProvider(
             create: (context) => loginBloc,
           ),
-          BlocProvider(
-            create: (context) => FolderTreeBloc(),
-          ),
+          // BlocProvider(
+          //   create: (context) => FolderTreeBloc(),
+          // ),
         ],
         child: hasCookie ? const HomePage() : const LoginScreen(),
       ),

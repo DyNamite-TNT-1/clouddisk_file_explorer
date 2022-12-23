@@ -16,7 +16,6 @@ class _HomePageState extends State<HomePage> {
   var path = "";
   int initialValue1 = 0;
   int initialValue2 = 0;
-
   void onSelected(BuildContext context, int value) {
     switch (value) {
       case 0:
@@ -50,6 +49,21 @@ class _HomePageState extends State<HomePage> {
               onSave: () {
                 print("Sort Type: $sortType");
                 print("Order: $order");
+                setState(() {
+                  //nhấn Save sẽ gán isSort = true để tiến hành sort, isDefault = false
+                  isSort = true;
+                  isClickedDefault = false;
+                });
+              },
+              onDefault: () {
+                initialValue1 = 0;
+                initialValue2 = 0;
+                setState(() {
+                  //nhấn Save as Default sẽ gán isDefault = true để trở lại list ban đầu chưa sort, isSort = false
+                  //isClickedDefault có nghĩa là ấn nút Default hay không chứ không có nghĩa list đó default hay không
+                  isClickedDefault = true;
+                  isSort = false;
+                });
               },
               initValue1: initialValue1,
               initValue2: initialValue2,
@@ -118,6 +132,8 @@ class _HomePageState extends State<HomePage> {
       ),
       body: WillPopScope(
         onWillPop: () async {
+          currentId = preId;
+          isSort = false;
           setState(() {
             //xóa thằng cuối khi pop
             var chars = path.split("/");
@@ -250,11 +266,13 @@ class MyDialog extends StatefulWidget {
     Key? key,
     required this.onValueChange,
     required this.onSave,
+    required this.onDefault,
     required this.initValue1,
     required this.initValue2,
   }) : super(key: key);
   final void Function(int, int) onValueChange;
   final VoidCallback onSave;
+  final VoidCallback onDefault;
   final int initValue1;
   final int initValue2;
 
@@ -327,7 +345,10 @@ class _MyDialogState extends State<MyDialog> {
       ),
       actions: [
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pop();
+            widget.onDefault();
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.grey.shade300,
             padding: EdgeInsets.zero,
