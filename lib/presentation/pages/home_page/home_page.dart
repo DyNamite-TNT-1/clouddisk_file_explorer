@@ -1,11 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -19,6 +14,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final navKey = GlobalKey<NavigatorState>();
   var path = "";
+  int initialValue1 = 0;
+  int initialValue2 = 0;
 
   void onSelected(BuildContext context, int value) {
     switch (value) {
@@ -28,6 +25,8 @@ class _HomePageState extends State<HomePage> {
           builder: (context) {
             return MyDialog(
               onValueChange: (int value1, int value2) {
+                initialValue1 = value1;
+                initialValue2 = value2;
                 switch (value1) {
                   case 0:
                     sortType = "size";
@@ -52,6 +51,8 @@ class _HomePageState extends State<HomePage> {
                 print("Sort Type: $sortType");
                 print("Order: $order");
               },
+              initValue1: initialValue1,
+              initValue2: initialValue2,
             );
           },
         );
@@ -191,15 +192,23 @@ class RadioList extends StatefulWidget {
     Key? key,
     required this.listItem,
     required this.onTap,
+    required this.initValue,
   }) : super(key: key);
   final List<String> listItem;
   final void Function(int) onTap;
+  final int initValue;
   @override
   State<RadioList> createState() => _RadioListState();
 }
 
 class _RadioListState extends State<RadioList> {
   int selectedRadio = 0;
+  @override
+  void initState() {
+    selectedRadio = widget.initValue;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -241,9 +250,14 @@ class MyDialog extends StatefulWidget {
     Key? key,
     required this.onValueChange,
     required this.onSave,
+    required this.initValue1,
+    required this.initValue2,
   }) : super(key: key);
   final void Function(int, int) onValueChange;
   final VoidCallback onSave;
+  final int initValue1;
+  final int initValue2;
+
   @override
   State<MyDialog> createState() => _MyDialogState();
 }
@@ -279,6 +293,7 @@ class _MyDialogState extends State<MyDialog> {
                       sortType = value;
                       widget.onValueChange(sortType, order);
                     },
+                    initValue: widget.initValue1,
                   ),
                   const Text(
                     "Order",
@@ -292,6 +307,7 @@ class _MyDialogState extends State<MyDialog> {
                       order = value;
                       widget.onValueChange(sortType, order);
                     },
+                    initValue: widget.initValue2,
                   ),
                 ],
               ),
