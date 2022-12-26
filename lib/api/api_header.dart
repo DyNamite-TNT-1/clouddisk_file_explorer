@@ -22,6 +22,6 @@ List<String> cookie = [
 ];
 
 //header của getFolder, sortFolder
-final folderHeader = {
+final fileHeader = {
   "Cookie": cookie.join(";"),
 };

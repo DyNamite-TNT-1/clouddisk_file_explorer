@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-class AuthApi {
+class Api {
   final Dio _dio = Dio();
   Future<String> get(url, Map<String, dynamic>? header) async {
     var response = await _dio.get(

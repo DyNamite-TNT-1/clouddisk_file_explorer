@@ -13,7 +13,7 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  AuthApi api = AuthApi();
+  Api api = Api();
   LoginBloc() : super(LoginInitial()) {
     on<LoginEvent>((event, emit) async {
       if (event is ClickedLoginEvent) {

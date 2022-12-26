@@ -15,15 +15,13 @@ part 'folder_tree_event.dart';
 part 'folder_tree_state.dart';
 
 class FolderTreeBloc extends Bloc<FolderTreeEvent, FolderTreeState> {
-  AuthApi api = AuthApi();
+  Api api = Api();
   FolderTreeBloc() : super(FolderTreeInitial()) {
     on<FolderTreeEvent>((event, emit) async {
       if (event is LoadEvent) {
-        print(1);
         folders = [];
         emit(FolderTreeLoading());
-        final resp =
-            await api.get(getFolderUrl("file", event.id), folderHeader);
+        final resp = await api.get(getFolderUrl("file", event.id), fileHeader);
         final json = jsonDecode(resp);
         final List itemList = json["files"];
         folders =
@@ -40,13 +38,11 @@ class FolderTreeBloc extends Bloc<FolderTreeEvent, FolderTreeState> {
         emit(FolderTreeLoaded(folders));
       }
       if (event is SortEvent) {
-        print(2);
-
         folders = [];
         emit(FolderTreeLoading());
         final resp = await api.get(
             sortFolderUrl("file", event.id, event.sort, event.order),
-            folderHeader);
+            fileHeader);
         final json = jsonDecode(resp);
         final List itemList = json["files"];
         folders =

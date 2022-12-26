@@ -1,7 +1,12 @@
+import 'package:clouddisk_login_form/api/params/send_file_par.dart';
+import 'package:clouddisk_login_form/bloc/send_file_bloc/send_file_bloc.dart';
 import 'package:clouddisk_login_form/components/list_radio.dart';
+import 'package:clouddisk_login_form/presentation/pages/home_page/conponents/send_dialog.dart';
+import 'package:clouddisk_login_form/presentation/pages/home_page/conponents/sort_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,13 +24,33 @@ class _HomePageState extends State<HomePage> {
   var path = "";
   int initialValue1 = 0;
   int initialValue2 = 0;
+  SendFile sendFile = SendFile([], "set");
+  List<Map<String, dynamic>> listFileSend = [];
 
   Future onSend(BuildContext context) {
     return showDialog(
+        useRootNavigator: false,
         context: context,
         builder: (context) {
-          return const SendDialog();
+          return SendDialog(
+            onSend: (p0, p1) {
+              for (var element in listMapChecked) {
+                listFileSend.add({
+                  "id": element["id"],
+                  "name": element["name"],
+                  "count": p0,
+                  "expire": p1,
+                });
+              }
+              sendFile.files = listFileSend;
+              addEvent(); //gọi function ở dưới để sử dụng context của HomePage, vì context của HomePage nằm trong BlocProvider ở main.dart
+            },
+          );
         });
+  }
+
+  void addEvent() {
+    BlocProvider.of<SendFileBloc>(context).add(CLickedSendEvent(sendFile));
   }
 
   void onSelected(BuildContext context, int value) {
@@ -88,144 +113,148 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 28.0,
-              width: 28.0,
-              child: IconButton(
-                padding: const EdgeInsets.all(0),
-                onPressed: () {
-                  setState(() {
-                    //xóa thằng cuối khi pop
-                    var chars = path.split("/");
-                    chars.removeLast();
-                    path = chars.join("/");
-                  });
-                  if (navKey.currentState != null) {
-                    if (navKey.currentState!.canPop()) {
-                      navKey.currentState!.pop();
-                    }
-                  }
-                },
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
+    return BlocBuilder<SendFileBloc, SendFileState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 28.0,
+                  width: 28.0,
+                  child: IconButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      setState(() {
+                        //xóa thằng cuối khi pop
+                        var chars = path.split("/");
+                        chars.removeLast();
+                        path = chars.join("/");
+                      });
+                      if (navKey.currentState != null) {
+                        if (navKey.currentState!.canPop()) {
+                          navKey.currentState!.pop();
+                        }
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            const Text(
-              "CloudDisk",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-            Text(
-              " ${listMapChecked.isNotEmpty ? "(" : ""}${listMapChecked.isNotEmpty ? listMapChecked.length : ""}${listMapChecked.isNotEmpty ? ")" : ""}",
-              style: const TextStyle(
-                color: Colors.amberAccent,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          listMapChecked.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(
-                    Icons.send,
+                const SizedBox(
+                  width: 8,
+                ),
+                const Text(
+                  "CloudDisk",
+                  style: TextStyle(
                     color: Colors.white,
                   ),
-                  onPressed: () {
-                    onSend(context);
-                  },
-                )
-              : Container(),
-          PopupMenuButton<int>(
-            color: Colors.white,
-            constraints: const BoxConstraints(
-              minWidth: 150,
+                ),
+                Text(
+                  " ${listMapChecked.isNotEmpty ? "(" : ""}${listMapChecked.isNotEmpty ? listMapChecked.length : ""}${listMapChecked.isNotEmpty ? ")" : ""}",
+                  style: const TextStyle(
+                    color: Colors.amberAccent,
+                  ),
+                ),
+              ],
             ),
-            padding: const EdgeInsets.all(0),
-            icon: const Icon(
-              Icons.more_vert,
-              color: Colors.white,
-            ),
-            onSelected: (value) {
-              onSelected(context, value);
-            },
-            itemBuilder: ((context) {
-              return [
-                popupMenuItem("Sort"),
-              ];
-            }),
+            actions: [
+              listMapChecked.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(
+                        Icons.send,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        onSend(context);
+                      },
+                    )
+                  : Container(),
+              PopupMenuButton<int>(
+                color: Colors.white,
+                constraints: const BoxConstraints(
+                  minWidth: 150,
+                ),
+                padding: const EdgeInsets.all(0),
+                icon: const Icon(
+                  Icons.more_vert,
+                  color: Colors.white,
+                ),
+                onSelected: (value) {
+                  onSelected(context, value);
+                },
+                itemBuilder: ((context) {
+                  return [
+                    popupMenuItem("Sort"),
+                  ];
+                }),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: WillPopScope(
-        onWillPop: () async {
-          currentId = preId;
-          isSort = false;
-          setState(() {
-            //xóa thằng cuối khi pop
-            var chars = path.split("/");
-            chars.removeLast();
-            path = chars.join("/");
-          });
-          if (navKey.currentState != null) {
-            if (navKey.currentState!.canPop()) {
-              navKey.currentState!.pop();
-              return false;
-            }
-          }
-          return true;
-        },
-        child: Navigator(
-          key: navKey,
-          onGenerateRoute: (settings) {
-            switch (settings.name) {
-              case "/":
-                return MaterialPageRoute(
-                  settings: settings,
-                  builder: (context) {
-                    return FolderScreen(
-                      folderId: "",
-                      currentPath: "",
-                      onPressed: () {
-                        setState(() {});
+          body: WillPopScope(
+            onWillPop: () async {
+              currentId = preId;
+              isSort = false;
+              setState(() {
+                //xóa thằng cuối khi pop
+                var chars = path.split("/");
+                chars.removeLast();
+                path = chars.join("/");
+              });
+              if (navKey.currentState != null) {
+                if (navKey.currentState!.canPop()) {
+                  navKey.currentState!.pop();
+                  return false;
+                }
+              }
+              return true;
+            },
+            child: Navigator(
+              key: navKey,
+              onGenerateRoute: (settings) {
+                switch (settings.name) {
+                  case "/":
+                    return MaterialPageRoute(
+                      settings: settings,
+                      builder: (context) {
+                        return FolderScreen(
+                          folderId: "",
+                          currentPath: "",
+                          onPressed: () {
+                            setState(() {});
+                          },
+                        );
                       },
                     );
-                  },
-                );
-              case "/folderScreen":
-                var arguments = settings.arguments as Map;
-                var folderId = arguments["folderId"];
-                var currentPath = arguments["currentPath"];
-                path += currentPath;
-                if (path[0] == "/") path = path.substring(1);
-                return MaterialPageRoute(
-                  settings: settings,
-                  builder: (context) {
-                    return FolderScreen(
-                      folderId: folderId,
-                      currentPath: path,
-                      onPressed: () {
-                        setState(() {});
+                  case "/folderScreen":
+                    var arguments = settings.arguments as Map;
+                    var folderId = arguments["folderId"];
+                    var currentPath = arguments["currentPath"];
+                    path += currentPath;
+                    if (path[0] == "/") path = path.substring(1);
+                    return MaterialPageRoute(
+                      settings: settings,
+                      builder: (context) {
+                        return FolderScreen(
+                          folderId: folderId,
+                          currentPath: path,
+                          onPressed: () {
+                            setState(() {});
+                          },
+                        );
                       },
                     );
-                  },
-                );
-            }
-            return null;
-          },
-        ),
-      ),
+                }
+                return null;
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -236,286 +265,6 @@ class _HomePageState extends State<HomePage> {
       child: Text(
         content,
         style: const TextStyle(fontSize: 16, color: Colors.black),
-      ),
-    );
-  }
-}
-
-class SortDialog extends StatefulWidget {
-  const SortDialog({
-    Key? key,
-    required this.onValueChange,
-    required this.onSave,
-    required this.onDefault,
-    required this.initValue1,
-    required this.initValue2,
-  }) : super(key: key);
-  final void Function(int, int) onValueChange;
-  final VoidCallback onSave;
-  final VoidCallback onDefault;
-  final int initValue1;
-  final int initValue2;
-
-  @override
-  State<SortDialog> createState() => _SortDialogState();
-}
-
-class _SortDialogState extends State<SortDialog> {
-  int sortType = 0;
-  int order = 0;
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: EdgeInsets.zero,
-      content: SizedBox(
-        width: 170,
-        height: 300,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 12, left: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Sort Type",
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
-                  RadioList(
-                    listItem: const ["Size", "File Name", "Date"],
-                    onTap: (value) {
-                      sortType = value;
-                      widget.onValueChange(sortType, order);
-                    },
-                    initValue: widget.initValue1,
-                  ),
-                  const Text(
-                    "Order",
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
-                  RadioList(
-                    listItem: const ["Ascending", "Descending"],
-                    onTap: (value) {
-                      order = value;
-                      widget.onValueChange(sortType, order);
-                    },
-                    initValue: widget.initValue2,
-                  ),
-                ],
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: const Icon(
-                Icons.close,
-                color: Colors.black54,
-                size: 36,
-              ),
-            )
-          ],
-        ),
-      ),
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            widget.onDefault();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.grey.shade300,
-            padding: EdgeInsets.zero,
-            fixedSize: const Size(135, 40),
-          ),
-          child: const Text(
-            "SAVE AS DEFAULT",
-            style: TextStyle(fontSize: 12),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            widget.onSave();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.grey.shade300,
-            padding: EdgeInsets.zero,
-            fixedSize: const Size(135, 40),
-          ),
-          child: const Text(
-            "SAVE",
-            style: TextStyle(fontSize: 12),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class SendDialog extends StatefulWidget {
-  const SendDialog({super.key});
-
-  @override
-  State<SendDialog> createState() => _SendDialogState();
-}
-
-class _SendDialogState extends State<SendDialog> {
-  DateTime selectedDate = DateTime.now();
-  TextEditingController countController = TextEditingController();
-
-  @override
-  void initState() {
-    countController.text = "100";
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    countController.dispose();
-    super.dispose();
-  }
-
-  void _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-      // helpText: 'Pick date',
-      confirmText: 'OK',
-      cancelText: 'Cancel',
-    );
-
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      // contentPadding: EdgeInsets.zero,
-      content: SizedBox(
-        height: 200,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 12,
-            ),
-            const Text(
-              "Cloud Disk",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            const Text(
-              "Expired Date (NOT less than current date)",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 14,
-              ),
-            ),
-            calendarMethod(context),
-            const SizedBox(
-              height: 16,
-            ),
-            const Text(
-              "Download count (greater than 0)",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 14,
-              ),
-            ),
-            SizedBox(
-              height: 36,
-              child: TextFormField(
-                controller: countController,
-                keyboardType: TextInputType.number,
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.only(bottom: 4),
-                  hintText: "100",
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text(
-            "CANCEL",
-            style: TextStyle(fontSize: 14),
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            print("Selected Date: $selectedDate");
-            print("Count: ${countController.text}");
-            print(listMapChecked);
-            Navigator.of(context).pop();
-          },
-          child: const Text(
-            "OK",
-            style: TextStyle(fontSize: 14),
-          ),
-        ),
-      ],
-    );
-  }
-
-  GestureDetector calendarMethod(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        _selectDate(context);
-      },
-      child: Container(
-        margin: const EdgeInsets.only(top: 8),
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-        width: double.infinity,
-        height: 48,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: const Color(0xffdcdcdc)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              DateFormat('dd/MM/yyyy').format(selectedDate),
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff121212),
-              ),
-            ),
-            const Icon(
-              Icons.calendar_month_outlined,
-              color: Colors.black,
-              size: 28,
-            ),
-          ],
-        ),
       ),
     );
   }
