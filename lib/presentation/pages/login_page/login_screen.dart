@@ -1,4 +1,4 @@
-import 'package:clouddisk_login_form/api/request/login_req.dart';
+import 'package:clouddisk_login_form/api/requests/login_req.dart';
 import 'package:clouddisk_login_form/bloc/login_bloc/login_bloc.dart';
 import 'package:clouddisk_login_form/components/auth_button.dart';
 import 'package:clouddisk_login_form/components/auth_input.dart';

@@ -1,4 +1,4 @@
-Map<String, dynamic> mapChecked = {};
+List<Map<String, dynamic>> listMapChecked = [];
 bool isSort = false;
 bool isClickedDefault = false;
 String sortType = "size";

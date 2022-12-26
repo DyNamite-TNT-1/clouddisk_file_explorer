@@ -27,6 +27,19 @@ class _ItemFileState extends State<ItemFile> {
   }
 
   @override
+  void initState() {
+    //kiểm tra trong list, phần tử nào có "id" = itemId và "checked" = true thì setState
+    if (listMapChecked.isNotEmpty) {
+      if (listMapChecked
+              .indexWhere((element) => element["id"] == widget.item.id) !=
+          -1) {
+        isChecked = true;
+      }
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.item.buildThumbnail(widget.item.ext) != "") {
       getImage(widget.item.ext).then((_) {
@@ -39,20 +52,20 @@ class _ItemFileState extends State<ItemFile> {
         hasThumbnail = false;
       });
     }
-    if (mapChecked[widget.item.id] == true) {
-      setState(() {
-        isChecked = true;
-      });
-    }
     return InkWell(
       onTap: () {
         if (widget.item.type == "file") {
           setState(() {
             isChecked = !isChecked;
             if (isChecked) {
-              mapChecked.addAll({widget.item.id: true});
+              listMapChecked.add({
+                "id": widget.item.id,
+                "name": widget.item.text,
+                "checked": true,
+              });
             } else {
-              mapChecked.remove(widget.item.id);
+              listMapChecked
+                  .removeWhere((element) => element["id"] == widget.item.id);
             }
           });
         }
@@ -153,9 +166,14 @@ class _ItemFileState extends State<ItemFile> {
                       setState(() {
                         isChecked = value!;
                         if (isChecked) {
-                          mapChecked.addAll({widget.item.id: true});
+                          listMapChecked.add({
+                            "id": widget.item.id,
+                            "name": widget.item.text,
+                            "checked": true,
+                          });
                         } else {
-                          mapChecked.remove(widget.item.id);
+                          listMapChecked.removeWhere(
+                              (element) => element["id"] == widget.item.id);
                         }
                       });
                       widget.onPressed(isChecked);
