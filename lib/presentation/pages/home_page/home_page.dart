@@ -1,13 +1,11 @@
 import 'package:clouddisk_login_form/api/params/send_file_par.dart';
 import 'package:clouddisk_login_form/bloc/send_file_bloc/send_file_bloc.dart';
-import 'package:clouddisk_login_form/components/list_radio.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/conponents/send_dialog.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/conponents/sort_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:clouddisk_login_form/presentation/screens/folder_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -89,17 +87,14 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   //nhấn Save sẽ gán isSort = true để tiến hành sort, isDefault = false
                   isSort = true;
-                  isClickedDefault = false;
+                  // isClickedSort = true;
                 });
               },
               onDefault: () {
-                initialValue1 = 0;
-                initialValue2 = 0;
                 setState(() {
                   //nhấn Save as Default sẽ gán isDefault = true để trở lại list ban đầu chưa sort, isSort = false
                   //isClickedDefault có nghĩa là ấn nút Default hay không chứ không có nghĩa list đó default hay không
                   isClickedDefault = true;
-                  isSort = false;
                 });
               },
               initValue1: initialValue1,
@@ -198,7 +193,6 @@ class _HomePageState extends State<HomePage> {
           body: WillPopScope(
             onWillPop: () async {
               currentId = preId;
-              isSort = false;
               setState(() {
                 //xóa thằng cuối khi pop
                 var chars = path.split("/");

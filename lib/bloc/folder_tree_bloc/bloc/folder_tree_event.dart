@@ -9,6 +9,7 @@ abstract class FolderTreeEvent extends Equatable {
 
 class LoadEvent extends FolderTreeEvent {
   final String id;
+
   const LoadEvent(this.id);
 
   @override

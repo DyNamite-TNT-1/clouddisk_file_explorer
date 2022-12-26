@@ -20,16 +20,21 @@ class FolderScreen extends StatefulWidget {
 
 class _FolderScreenState extends State<FolderScreen> {
   final FolderTreeBloc folderTreeBloc = FolderTreeBloc();
-  late bool sorted = false;
+
   @override
   void initState() {
-    folderTreeBloc.add(LoadEvent(widget.folderId));
+    if (isSort) {
+      print("$sortType...$order");
+      folderTreeBloc.add(SortEvent(widget.folderId, sortType, order));
+    } else {
+      folderTreeBloc.add(LoadEvent(widget.folderId));
+    }
     currentId = widget.folderId;
     super.initState();
   }
 
   Future<void> _refresh() async {
-    if (sorted) {
+    if (isSort) {
       folderTreeBloc.add(SortEvent(widget.folderId, sortType, order));
     } else {
       folderTreeBloc.add(LoadEvent(widget.folderId));
@@ -38,17 +43,20 @@ class _FolderScreenState extends State<FolderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print("${widget.folderId}...$isSort...$isClickedDefault");
-    //Khi nhấn nút "Save on Default" hoặc "Save" thì sẽ setState lại(ở homepage.dart), nên tất cả màn hình con đều bị ảnh hưởng,
+    print(isSort);
+    print("$currentId...${widget.folderId}...$preId");
     //=>> thêm điều kiện "currentId == widget.folderId" để chỉ áp dụng cho 1 màn hình đang hiển thị
+    // Bấm save, tức là tiêu chí sort được áp dụng. (k áp dụng tiêu chí sort đó cho sau này, nghĩa là khi kill app, mở lên lại thì app default)
+    // Khi push màn hình mới thì sẽ auto sort màn hình mới đó theo tiêu chí sort
+    // Khi pop, màn hình giữ nguyên như cũ, pull down to refresh mới sort theo tiêu chí sort
     if (isSort && currentId == widget.folderId) {
-      sorted = true;
+      print(1);
       folderTreeBloc.add(SortEvent(widget.folderId, sortType, order));
     }
-    if (isClickedDefault && currentId == widget.folderId) {
-      sorted = false;
-      folderTreeBloc.add(LoadEvent(widget.folderId));
-    }
+    // else {
+    //   currentId == widget.folderId;
+    // }
+    // Save as default, tức là áp dụng tiêu chí sort đó cho sau này, nghĩa là khi kill app, mở lên lại thì app sẽ theo tiêu chí sort đó
     return BlocProvider(
       create: (context) => folderTreeBloc,
       child: BlocListener<FolderTreeBloc, FolderTreeState>(

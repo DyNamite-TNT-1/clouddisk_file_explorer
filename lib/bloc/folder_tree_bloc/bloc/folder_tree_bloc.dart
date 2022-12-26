@@ -55,8 +55,6 @@ class FolderTreeBloc extends Bloc<FolderTreeEvent, FolderTreeState> {
             element.addColorandIcon(Colors.indigo, Icons.folder);
           }
         }
-        // sau khi sort sẽ cho isSort = false để qua màn hình khác không bị auto sort
-        isSort = false;
         emit(FolderTreeLoaded(folders));
       }
     });

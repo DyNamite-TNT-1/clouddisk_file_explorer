@@ -21,10 +21,10 @@ class SortDialog extends StatefulWidget {
 }
 
 class _SortDialogState extends State<SortDialog> {
-  int sortType = 0;
-  int order = 0;
   @override
   Widget build(BuildContext context) {
+    int sortType = widget.initValue1;
+    int order = widget.initValue2;
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
       content: SizedBox(
@@ -51,7 +51,7 @@ class _SortDialogState extends State<SortDialog> {
                       sortType = value;
                       widget.onValueChange(sortType, order);
                     },
-                    initValue: widget.initValue1,
+                    initValue: sortType,
                   ),
                   const Text(
                     "Order",
@@ -65,7 +65,7 @@ class _SortDialogState extends State<SortDialog> {
                       order = value;
                       widget.onValueChange(sortType, order);
                     },
-                    initValue: widget.initValue2,
+                    initValue: order,
                   ),
                 ],
               ),
