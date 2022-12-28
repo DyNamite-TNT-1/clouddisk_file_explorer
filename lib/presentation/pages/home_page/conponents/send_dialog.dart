@@ -112,12 +112,9 @@ class _SendDialogState extends State<SendDialog> {
         ),
         TextButton(
           onPressed: () {
-            print("Selected Date: $selectedDate");
-            print("Count: ${countController.text}");
             var miliseconds = selectedDate.millisecondsSinceEpoch;
             var seconds = miliseconds ~/ 1000;
             widget.onSend(countController.text, seconds.toString());
-            Navigator.of(context).pop();
           },
           child: const Text(
             "OK",

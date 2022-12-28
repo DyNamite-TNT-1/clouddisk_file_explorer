@@ -18,4 +18,9 @@ class LogInResponse {
       "hmail_key": hmailkey,
     };
   }
+
+  @override
+  String toString() {
+    return "success: $success, msg: $msg, session: $session, hmailkey: $hmailkey";
+  }
 }

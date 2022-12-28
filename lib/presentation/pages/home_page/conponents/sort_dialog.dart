@@ -86,7 +86,6 @@ class _SortDialogState extends State<SortDialog> {
       actions: [
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
             widget.onDefault();
           },
           style: ElevatedButton.styleFrom(
@@ -101,7 +100,6 @@ class _SortDialogState extends State<SortDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
             widget.onSave();
           },
           style: ElevatedButton.styleFrom(

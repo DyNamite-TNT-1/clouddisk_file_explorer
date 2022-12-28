@@ -24,13 +24,18 @@ class _FolderScreenState extends State<FolderScreen> {
   @override
   void initState() {
     if (isSort) {
-      print("$sortType...$order");
       folderTreeBloc.add(SortEvent(widget.folderId, sortType, order));
     } else {
       folderTreeBloc.add(LoadEvent(widget.folderId));
     }
     currentId = widget.folderId;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    folderTreeBloc.close();
+    super.dispose();
   }
 
   Future<void> _refresh() async {
@@ -43,16 +48,15 @@ class _FolderScreenState extends State<FolderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(isSort);
-    print("$currentId...${widget.folderId}...$preId");
-    //=>> thêm điều kiện "currentId == widget.folderId" để chỉ áp dụng cho 1 màn hình đang hiển thị
-    // Bấm save, tức là tiêu chí sort được áp dụng. (k áp dụng tiêu chí sort đó cho sau này, nghĩa là khi kill app, mở lên lại thì app default)
-    // Khi push màn hình mới thì sẽ auto sort màn hình mới đó theo tiêu chí sort
-    // Khi pop, màn hình giữ nguyên như cũ, pull down to refresh mới sort theo tiêu chí sort
-    if (isSort && currentId == widget.folderId) {
-      print(1);
-      folderTreeBloc.add(SortEvent(widget.folderId, sortType, order));
-    }
+    // print(isSort);
+    // print("$currentId...${widget.folderId}...$preId");
+    // //=>> thêm điều kiện "currentId == widget.folderId" để chỉ áp dụng cho 1 màn hình đang hiển thị
+    // // Bấm save, tức là tiêu chí sort được áp dụng. (k áp dụng tiêu chí sort đó cho sau này, nghĩa là khi kill app, mở lên lại thì app default)
+    // // Khi push màn hình mới thì sẽ auto sort màn hình mới đó theo tiêu chí sort
+    // // Khi pop, màn hình giữ nguyên như cũ, pull down to refresh mới sort theo tiêu chí sort
+    // if (isSort && currentId == widget.folderId) {
+    //   folderTreeBloc.add(SortEvent(widget.folderId, sortType, order));
+    // }
     // else {
     //   currentId == widget.folderId;
     // }

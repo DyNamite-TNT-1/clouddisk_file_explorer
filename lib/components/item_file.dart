@@ -19,11 +19,14 @@ class _ItemFileState extends State<ItemFile> {
   bool isChecked = false;
   bool hasThumbnail = false;
   late Widget image;
-  Future getImage(String ext) async {
+  Future<void> getImage(String ext) async {
     image = Image.network(
       widget.item.buildThumbnail(ext),
       height: 40,
     );
+    setState(() {
+      hasThumbnail = true;
+    });
   }
 
   @override
@@ -36,22 +39,14 @@ class _ItemFileState extends State<ItemFile> {
         isChecked = true;
       }
     }
+    if (widget.item.buildThumbnail(widget.item.ext) != "") {
+      getImage(widget.item.ext).then((_) {});
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.item.buildThumbnail(widget.item.ext) != "") {
-      getImage(widget.item.ext).then((_) {
-        setState(() {
-          hasThumbnail = true;
-        });
-      });
-    } else {
-      setState(() {
-        hasThumbnail = false;
-      });
-    }
     return InkWell(
       onTap: () {
         if (widget.item.type == "file") {

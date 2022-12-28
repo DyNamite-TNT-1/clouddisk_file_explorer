@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPreferences {
-  Future setSession(String session) async {
+  Future<void> setSession(String session) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString("session", session);
   }
@@ -11,7 +11,7 @@ class UserPreferences {
     return preferences.getString("session") ?? "";
   }
 
-  Future setHmailKey(String hmailkey) async {
+  Future<void> setHmailKey(String hmailkey) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString("hmail_key", hmailkey);
   }

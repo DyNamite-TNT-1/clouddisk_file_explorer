@@ -24,18 +24,6 @@ class _AuthButtonState extends State<AuthButton> {
         onTap: () {
           widget.onTap();
         },
-        onTapDown: (_) {
-          setState(() {
-            {
-              color = Colors.blue.shade400;
-            }
-          });
-        },
-        onTapUp: (_) {
-          setState(() {
-            color = Colors.blue.shade700;
-          });
-        },
         child: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(15),

@@ -1,13 +1,10 @@
 import 'package:clouddisk_login_form/bloc/login_bloc/login_bloc.dart';
 import 'package:clouddisk_login_form/bloc/send_file_bloc/send_file_bloc.dart';
-import 'package:clouddisk_login_form/models/user.dart';
+import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/home_page.dart';
 import 'package:clouddisk_login_form/presentation/pages/login_page/login_screen.dart';
-import 'package:clouddisk_login_form/utils/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-UserPreferences prefs = UserPreferences();
 
 void main() {
   runApp(const MyApp());
@@ -38,25 +35,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final LoginBloc loginBloc = LoginBloc();
-
-  bool hasCookie = true;
+  final SendFileBloc sendFileBloc = SendFileBloc();
+  bool hasCookie = false;
   var session = "";
   var hmailkey = "";
-  Future getCookie() async {
-    await prefs.getSession().then((value) {
-      session = value;
-    });
-    await prefs.getHmailKey().then((value) {
-      hmailkey = value;
-    });
+  Future<void> getCookie() async {
+    session = await prefs.getSession();
+    hmailkey = await prefs.getHmailKey();
   }
 
   @override
   void initState() {
-    getCookie().then((value) {
-      setState(() {
-        hasCookie = true;
-      });
+    getCookie().then((_) {
+      if (session != "" && hmailkey != "") {
+        setState(() {
+          hasCookie = true;
+        });
+      }
     });
     super.initState();
   }
@@ -64,17 +59,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     loginBloc.close();
+    sendFileBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (session == "" || hmailkey == "") {
-      hasCookie = false;
-    } else {
-      user.session = session;
-      user.hmailKey = hmailkey;
-    }
     return Scaffold(
       body: MultiBlocProvider(
         providers: [
@@ -82,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
             create: (context) => loginBloc,
           ),
           BlocProvider(
-            create: (context) => SendFileBloc(),
+            create: (context) => sendFileBloc,
           ),
         ],
         child: hasCookie ? const HomePage() : const LoginScreen(),

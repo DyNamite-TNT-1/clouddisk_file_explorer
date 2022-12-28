@@ -23,15 +23,16 @@ class _HomePageState extends State<HomePage> {
   int initialValue1 = 0;
   int initialValue2 = 0;
   SendFile sendFile = SendFile([], "set");
-  List<Map<String, dynamic>> listFileSend = [];
 
-  Future onSend(BuildContext context) {
+  Future<void> onSend(BuildContext context) {
     return showDialog(
         useRootNavigator: false,
         context: context,
         builder: (context) {
+          List<Map<String, dynamic>> listFileSend = [];
           return SendDialog(
             onSend: (p0, p1) {
+              Navigator.of(context).pop();
               for (var element in listMapChecked) {
                 listFileSend.add({
                   "id": element["id"],
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void addEvent() {
-    BlocProvider.of<SendFileBloc>(context).add(CLickedSendEvent(sendFile));
+    context.read<SendFileBloc>().add(CLickedSendEvent(sendFile));
   }
 
   void onSelected(BuildContext context, int value) {
@@ -84,6 +85,7 @@ class _HomePageState extends State<HomePage> {
               onSave: () {
                 print("Sort Type: $sortType");
                 print("Order: $order");
+                Navigator.of(context).pop();
                 setState(() {
                   //nhấn Save sẽ gán isSort = true để tiến hành sort, isDefault = false
                   isSort = true;
@@ -91,6 +93,7 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               onDefault: () {
+                Navigator.of(context).pop();
                 setState(() {
                   //nhấn Save as Default sẽ gán isDefault = true để trở lại list ban đầu chưa sort, isSort = false
                   //isClickedDefault có nghĩa là ấn nút Default hay không chứ không có nghĩa list đó default hay không
@@ -122,6 +125,7 @@ class _HomePageState extends State<HomePage> {
                   child: IconButton(
                     padding: const EdgeInsets.all(0),
                     onPressed: () {
+                      currentId = preId;
                       setState(() {
                         //xóa thằng cuối khi pop
                         var chars = path.split("/");
