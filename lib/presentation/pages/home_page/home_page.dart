@@ -27,6 +27,12 @@ class _HomePageState extends State<HomePage> {
   String sortType = "size";
   String order = "asc";
   SendFile sendFile = SendFile([], "set");
+  late SortBloc sortBloc;
+  @override
+  initState() {
+    sortBloc = context.read<SortBloc>();
+    super.initState();
+  }
 
   Future<void> onSend(BuildContext context) {
     return showDialog(
@@ -230,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                     var arguments = settings.arguments as Map;
                     var folderId = arguments["folderId"];
                     var currentPath = arguments["currentPath"];
-                    SortBloc sortBloc = arguments["sortBloc"];
+                    // SortBloc sortBloc = arguments["sortBloc"];
                     path += currentPath;
                     if (path[0] == "/") path = path.substring(1);
                     return MaterialPageRoute(

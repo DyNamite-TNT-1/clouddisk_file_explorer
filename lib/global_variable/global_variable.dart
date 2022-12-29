@@ -3,11 +3,8 @@ import 'package:clouddisk_login_form/utils/preferences.dart';
 
 UserPreferences prefs = UserPreferences();
 Api api = Api();
-
 List<Map<String, dynamic>> listMapChecked = [];
-// bool isSort = false;
-// bool isClickedSort = false;
-// bool isClickedDefault = false;
+bool isSort = false;
 // String sortType = "size";
 // String order = "asc";
 // String currentId = "";

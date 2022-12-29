@@ -30,7 +30,7 @@ class _ListItemsState extends State<ListItems> {
                   Navigator.of(context).pushNamed("/folderScreen", arguments: {
                     "folderId": widget.items[index].id.toString(),
                     "currentPath": "/${widget.items[index].text}",
-                    "sortBloc": context.read<SortBloc>()
+                    // "sortBloc": context.read<SortBloc>()
                   });
                 } else {
                   widget.onPressed();

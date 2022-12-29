@@ -14,15 +14,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginInitial()) {
     on<LoginEvent>((event, emit) async {
       if (event is ClickedLoginEvent) {
-        emit(LoginLoading());
+        if (!isClosed) {
+          emit(LoginLoading());
+        }
         final value = await api.post(loginUrl, event.req.getMap(), loginHeader);
         var loginRes = LogInResponse(value);
         if (loginRes.success == true) {
           prefs.setSession(loginRes.session); //save session vào preference
           prefs.setHmailKey(loginRes.hmailkey); //save hmailKey vào preference
-          emit(LoginSuccessLoaded(loginRes));
+          if (!isClosed) {
+            emit(LoginSuccessLoaded(loginRes));
+          }
         } else {
-          emit(const LoginFailLoaded("Không đăng nhập được"));
+          if (!isClosed) {
+            emit(const LoginFailLoaded("Không đăng nhập được"));
+          }
         }
       }
     });

@@ -1,6 +1,7 @@
 import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/bloc/sort_bloc/sort_bloc.dart';
 import 'package:clouddisk_login_form/components/list_items.dart';
+import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
