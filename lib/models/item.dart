@@ -116,7 +116,7 @@ class Folder extends Item {
 
   String buildThumbnail(String ext) {
     if (ext[0] != "/") return "";
-    return "https://groupware57.hanbiro.net${ext}_76x76.png";
+    return "https://gw.hanbiro.vn${ext}_76x76.png";
   }
 
   factory Folder.fromJson(Map<String, dynamic> json) {

@@ -1,5 +1,7 @@
 import 'package:clouddisk_login_form/api/params/send_file_par.dart';
+import 'package:clouddisk_login_form/bloc/login_bloc/login_bloc.dart';
 import 'package:clouddisk_login_form/bloc/send_file_bloc/send_file_bloc.dart';
+import 'package:clouddisk_login_form/bloc/sort_bloc/sort_bloc.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/conponents/send_dialog.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/conponents/sort_dialog.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,8 @@ class _HomePageState extends State<HomePage> {
   var path = "";
   int initialValue1 = 0;
   int initialValue2 = 0;
+  String sortType = "size";
+  String order = "asc";
   SendFile sendFile = SendFile([], "set");
 
   Future<void> onSend(BuildContext context) {
@@ -30,78 +34,73 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) {
           List<Map<String, dynamic>> listFileSend = [];
-          return SendDialog(
-            onSend: (p0, p1) {
-              Navigator.of(context).pop();
-              for (var element in listMapChecked) {
-                listFileSend.add({
-                  "id": element["id"],
-                  "name": element["name"],
-                  "count": p0,
-                  "expire": p1,
-                });
-              }
-              sendFile.files = listFileSend;
-              addEvent(); //gọi function ở dưới để sử dụng context của HomePage, vì context của HomePage nằm trong BlocProvider ở main.dart
-            },
+          return BlocProvider.value(
+            value: context.read<SendFileBloc>(),
+            child: SendDialog(
+              onSend: (p0, p1) {
+                Navigator.of(context).pop();
+                for (var element in listMapChecked) {
+                  listFileSend.add({
+                    "id": element["id"],
+                    "name": element["name"],
+                    "count": p0,
+                    "expire": p1,
+                  });
+                }
+                sendFile.files = listFileSend;
+                context.read<SendFileBloc>().add(CLickedSendEvent(sendFile));
+              },
+            ),
           );
         });
   }
 
-  void addEvent() {
-    context.read<SendFileBloc>().add(CLickedSendEvent(sendFile));
-  }
-
-  void onSelected(BuildContext context, int value) {
+  void onSelected(BuildContext context, int value) async {
     switch (value) {
       case 0:
-        showDialog(
+        await showDialog(
           context: context,
           builder: (context) {
-            return SortDialog(
-              onValueChange: (int value1, int value2) {
-                initialValue1 = value1;
-                initialValue2 = value2;
-                switch (value1) {
-                  case 0:
-                    sortType = "size";
-                    break;
-                  case 1:
-                    sortType = "name";
-                    break;
-                  case 2:
-                    sortType = "time";
-                    break;
-                }
-                switch (value2) {
-                  case 0:
-                    order = "asc";
-                    break;
-                  case 1:
-                    order = "desc";
-                    break;
-                }
-              },
-              onSave: () {
-                print("Sort Type: $sortType");
-                print("Order: $order");
-                Navigator.of(context).pop();
-                setState(() {
-                  //nhấn Save sẽ gán isSort = true để tiến hành sort, isDefault = false
-                  isSort = true;
-                  // isClickedSort = true;
-                });
-              },
-              onDefault: () {
-                // Navigator.of(context).pop();
-                // setState(() {
-                //   //nhấn Save as Default sẽ gán isDefault = true để trở lại list ban đầu chưa sort, isSort = false
-                //   //isClickedDefault có nghĩa là ấn nút Default hay không chứ không có nghĩa list đó default hay không
-                //   isClickedDefault = true;
-                // });
-              },
-              initValue1: initialValue1,
-              initValue2: initialValue2,
+            return BlocProvider.value(
+              value: context.read<SortBloc>(),
+              child: SortDialog(
+                onValueChange: (int value1, int value2) {
+                  initialValue1 = value1;
+                  initialValue2 = value2;
+                  switch (value1) {
+                    case 0:
+                      sortType = "size";
+                      break;
+                    case 1:
+                      sortType = "name";
+                      break;
+                    case 2:
+                      sortType = "time";
+                      break;
+                  }
+                  switch (value2) {
+                    case 0:
+                      order = "asc";
+                      break;
+                    case 1:
+                      order = "desc";
+                      break;
+                  }
+                },
+                onSave: () {
+                  print("Sort Type: $sortType");
+                  print("Order: $order");
+                  Navigator.of(context).pop();
+                  context
+                      .read<SortBloc>()
+                      .add(ClickedSortEvent(sortType, order));
+                },
+                onDefault: () {
+                  Navigator.of(context).pop();
+                },
+                initValue1: initialValue1,
+                initValue2: initialValue2,
+              ),
             );
           },
         );
@@ -126,7 +125,6 @@ class _HomePageState extends State<HomePage> {
                   child: IconButton(
                     padding: const EdgeInsets.all(0),
                     onPressed: () {
-                      currentId = preId;
                       setState(() {
                         //xóa thằng cuối khi pop
                         var chars = path.split("/");
@@ -197,7 +195,6 @@ class _HomePageState extends State<HomePage> {
           ),
           body: WillPopScope(
             onWillPop: () async {
-              currentId = preId;
               setState(() {
                 //xóa thằng cuối khi pop
                 var chars = path.split("/");
@@ -233,17 +230,21 @@ class _HomePageState extends State<HomePage> {
                     var arguments = settings.arguments as Map;
                     var folderId = arguments["folderId"];
                     var currentPath = arguments["currentPath"];
+                    SortBloc sortBloc = arguments["sortBloc"];
                     path += currentPath;
                     if (path[0] == "/") path = path.substring(1);
                     return MaterialPageRoute(
                       settings: settings,
                       builder: (context) {
-                        return FolderScreen(
-                          folderId: folderId,
-                          currentPath: path,
-                          onPressed: () {
-                            setState(() {});
-                          },
+                        return BlocProvider.value(
+                          value: sortBloc,
+                          child: FolderScreen(
+                            folderId: folderId,
+                            currentPath: path,
+                            onPressed: () {
+                              setState(() {});
+                            },
+                          ),
                         );
                       },
                     );

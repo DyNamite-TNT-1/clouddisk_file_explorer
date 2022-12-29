@@ -1,7 +1,9 @@
+import 'package:clouddisk_login_form/bloc/sort_bloc/sort_bloc.dart';
 import 'package:clouddisk_login_form/components/item_file.dart';
 import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:clouddisk_login_form/models/item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ListItems extends StatefulWidget {
   const ListItems({
@@ -25,10 +27,10 @@ class _ListItemsState extends State<ListItems> {
               item: widget.items[index],
               onPressed: (value) {
                 if (widget.items[index].type == "dir") {
-                  preId = currentId;
                   Navigator.of(context).pushNamed("/folderScreen", arguments: {
                     "folderId": widget.items[index].id.toString(),
                     "currentPath": "/${widget.items[index].text}",
+                    "sortBloc": context.read<SortBloc>()
                   });
                 } else {
                   widget.onPressed();

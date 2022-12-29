@@ -1,5 +1,7 @@
+import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/bloc/login_bloc/login_bloc.dart';
 import 'package:clouddisk_login_form/bloc/send_file_bloc/send_file_bloc.dart';
+import 'package:clouddisk_login_form/bloc/sort_bloc/sort_bloc.dart';
 import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:clouddisk_login_form/presentation/pages/home_page/home_page.dart';
 import 'package:clouddisk_login_form/presentation/pages/login_page/login_screen.dart';
@@ -10,13 +12,26 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final LoginBloc loginBloc = LoginBloc();
+  final SendFileBloc sendFileBloc = SendFileBloc();
+  final SortBloc sortBloc = SortBloc();
+  @override
+  void dispose() {
+    loginBloc.close();
+    sendFileBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final LoginBloc loginBloc = LoginBloc();
-    final SendFileBloc sendFileBloc = SendFileBloc();
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -25,6 +40,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => sendFileBloc,
         ),
+        BlocProvider(
+          create: (context) => sortBloc,
+        ),
+        // sortBloc
+        // add event.
+        // lang nghe sortbloc
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -38,49 +59,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class NavWidget extends StatefulWidget {
-//   const NavWidget({super.key});
-
-//   @override
-//   State<NavWidget> createState() => _NavWidgetState();
-// }
-
-// class _NavWidgetState extends State<NavWidget> {
-//   final LoginBloc loginBloc = LoginBloc();
-//   final SendFileBloc sendFileBloc = SendFileBloc();
-//   bool hasCookie = false;
-//   var session = "";
-//   var hmailkey = "";
-//   Future<void> getCookie() async {
-//     session = await prefs.getSession();
-//     hmailkey = await prefs.getHmailKey();
-//   }
-
-//   @override
-//   void initState() {
-//     getCookie().then((_) {
-//       if (session != "" && hmailkey != "") {
-//         setState(() {
-//           hasCookie = true;
-//         });
-//       }
-//     });
-//     super.initState();
-//   }
-
-//   @override
-//   void dispose() {
-//     loginBloc.close();
-//     sendFileBloc.close();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return
-//   }
-// }
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -89,8 +67,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final LoginBloc loginBloc = LoginBloc();
-  final SendFileBloc sendFileBloc = SendFileBloc();
   bool hasCookie = false;
   var session = "";
   var hmailkey = "";
@@ -109,13 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    loginBloc.close();
-    sendFileBloc.close();
-    super.dispose();
   }
 
   @override

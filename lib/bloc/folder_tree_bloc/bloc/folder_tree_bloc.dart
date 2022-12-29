@@ -68,7 +68,7 @@ class FolderTreeBloc extends Bloc<FolderTreeEvent, FolderTreeState> {
           emit(FolderTreeLoaded(folders.listFolders));
         }
       }
-      if (event is SortEvent) {
+      if (event is SortListEvent) {
         ListFolders folders = ListFolders(listFolders: []);
         if (!isClosed) {
           emit(FolderTreeLoading());

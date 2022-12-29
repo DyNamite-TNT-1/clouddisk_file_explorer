@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 
-class AuthButton extends StatefulWidget {
-  const AuthButton({
+class AuthButton extends StatelessWidget {
+  AuthButton({
     Key? key,
     required this.label,
     required this.onTap,
   }) : super(key: key);
   final String label;
   final VoidCallback onTap;
+  final Color color = Colors.blue.shade700;
 
-  @override
-  State<AuthButton> createState() => _AuthButtonState();
-}
-
-class _AuthButtonState extends State<AuthButton> {
-  Color color = Colors.blue.shade700;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +17,7 @@ class _AuthButtonState extends State<AuthButton> {
       width: double.infinity,
       child: InkWell(
         onTap: () {
-          widget.onTap();
+          onTap();
         },
         child: Container(
           alignment: Alignment.center,
@@ -31,7 +26,7 @@ class _AuthButtonState extends State<AuthButton> {
             color: color,
           ),
           child: Text(
-            widget.label,
+            label,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 16,

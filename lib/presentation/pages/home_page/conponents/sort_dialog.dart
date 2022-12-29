@@ -72,6 +72,7 @@ class _SortDialogState extends State<SortDialog> {
             ),
             InkWell(
               onTap: () {
+                //add event
                 Navigator.of(context).pop();
               },
               child: const Icon(

@@ -40,7 +40,7 @@ class _ItemFileState extends State<ItemFile> {
       }
     }
     if (widget.item.buildThumbnail(widget.item.ext) != "") {
-      getImage(widget.item.ext).then((_) {});
+      getImage(widget.item.ext);
     }
     super.initState();
   }

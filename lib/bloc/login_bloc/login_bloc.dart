@@ -28,3 +28,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
   }
 }
+
+// sortBloc bo ngoai cung de shared bloc
+// 
