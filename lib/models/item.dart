@@ -84,7 +84,7 @@ class Folder extends Item {
   }
 
   String formatBytes(String size, int decimals) {
-    var isNum = RegExp(r'^[0-9]*$').hasMatch(regdate);
+    var isNum = RegExp(r'^[0-9]*$').hasMatch(size);
     if (isNum) {
       //decimals: làm tròn tới decimals số thập phân
       int bytes = int.parse(size);
@@ -94,7 +94,7 @@ class Folder extends Item {
       return '${(bytes / pow(1024, i)).toStringAsFixed(decimals)} ${suffixes[i]}';
     }
     //Nếu không thì in ra lỗi
-    print("size is not only contains number");
+    // print("size is not only contains number");
     return "";
   }
 
@@ -110,7 +110,7 @@ class Folder extends Item {
       return dateString;
     }
     //Nếu không thì in ra lỗi
-    print("regdate is not only contains number");
+    // print("regdate is not only contains number");
     return "";
   }
 
