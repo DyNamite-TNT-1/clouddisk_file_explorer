@@ -94,7 +94,8 @@ class Folder extends Item {
       return '${(bytes / pow(1024, i)).toStringAsFixed(decimals)} ${suffixes[i]}';
     }
     //Nếu không thì in ra lỗi
-    return "size is not only contains number";
+    print("size is not only contains number");
+    return "";
   }
 
   String formatDates(String regdate) {
@@ -109,7 +110,8 @@ class Folder extends Item {
       return dateString;
     }
     //Nếu không thì in ra lỗi
-    return "regdate is not only contains number";
+    print("regdate is not only contains number");
+    return "";
   }
 
   String buildThumbnail(String ext) {

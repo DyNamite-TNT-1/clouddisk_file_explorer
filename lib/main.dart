@@ -15,16 +15,71 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.cyan,
+    final LoginBloc loginBloc = LoginBloc();
+    final SendFileBloc sendFileBloc = SendFileBloc();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => loginBloc,
+        ),
+        BlocProvider(
+          create: (context) => sendFileBloc,
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.cyan,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }
+
+// class NavWidget extends StatefulWidget {
+//   const NavWidget({super.key});
+
+//   @override
+//   State<NavWidget> createState() => _NavWidgetState();
+// }
+
+// class _NavWidgetState extends State<NavWidget> {
+//   final LoginBloc loginBloc = LoginBloc();
+//   final SendFileBloc sendFileBloc = SendFileBloc();
+//   bool hasCookie = false;
+//   var session = "";
+//   var hmailkey = "";
+//   Future<void> getCookie() async {
+//     session = await prefs.getSession();
+//     hmailkey = await prefs.getHmailKey();
+//   }
+
+//   @override
+//   void initState() {
+//     getCookie().then((_) {
+//       if (session != "" && hmailkey != "") {
+//         setState(() {
+//           hasCookie = true;
+//         });
+//       }
+//     });
+//     super.initState();
+//   }
+
+//   @override
+//   void dispose() {
+//     loginBloc.close();
+//     sendFileBloc.close();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return
+//   }
+// }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -66,17 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => loginBloc,
-          ),
-          BlocProvider(
-            create: (context) => sendFileBloc,
-          ),
-        ],
-        child: hasCookie ? const HomePage() : const LoginScreen(),
-      ),
+      body: hasCookie ? const HomePage() : const LoginScreen(),
     );
   }
 }

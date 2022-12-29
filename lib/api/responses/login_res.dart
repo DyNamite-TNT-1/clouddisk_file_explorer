@@ -6,8 +6,8 @@ class LogInResponse {
   LogInResponse(Map map) {
     success = map["success"];
     msg = map["msg"];
-    session = map["session"];
-    hmailkey = map["hmail_key"];
+    session = map["session"] ?? "";
+    hmailkey = map["hmail_key"] ?? "";
   }
 
   Map getMap() {

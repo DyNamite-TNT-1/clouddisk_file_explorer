@@ -93,12 +93,12 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               onDefault: () {
-                Navigator.of(context).pop();
-                setState(() {
-                  //nhấn Save as Default sẽ gán isDefault = true để trở lại list ban đầu chưa sort, isSort = false
-                  //isClickedDefault có nghĩa là ấn nút Default hay không chứ không có nghĩa list đó default hay không
-                  isClickedDefault = true;
-                });
+                // Navigator.of(context).pop();
+                // setState(() {
+                //   //nhấn Save as Default sẽ gán isDefault = true để trở lại list ban đầu chưa sort, isSort = false
+                //   //isClickedDefault có nghĩa là ấn nút Default hay không chứ không có nghĩa list đó default hay không
+                //   isClickedDefault = true;
+                // });
               },
               initValue1: initialValue1,
               initValue2: initialValue2,
@@ -116,6 +116,7 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           appBar: AppBar(
             elevation: 0,
+            automaticallyImplyLeading: false,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
