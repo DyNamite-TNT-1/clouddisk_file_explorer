@@ -1,7 +1,6 @@
 import 'package:clouddisk_login_form/bloc/folder_tree_bloc/bloc/folder_tree_bloc.dart';
 import 'package:clouddisk_login_form/bloc/sort_bloc/sort_bloc.dart';
 import 'package:clouddisk_login_form/components/list_items.dart';
-import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,12 +23,12 @@ class _FolderScreenState extends State<FolderScreen> {
 
   @override
   void initState() {
-    // if (isSort) {
-    //   folderTreeBloc.add(SortListEvent(widget.folderId, sortType, order));
+    // if (widget.isSort) {
+    //   folderTreeBloc
+    //       .add(SortListEvent(widget.folderId, widget.sortType, widget.order));
     // } else {
     folderTreeBloc.add(LoadEvent(widget.folderId));
     // }
-    // currentId = widget.folderId;
     super.initState();
   }
 
@@ -40,8 +39,9 @@ class _FolderScreenState extends State<FolderScreen> {
   }
 
   Future<void> _refresh() async {
-    // if (isSort) {
-    //   folderTreeBloc.add(SortListEvent(widget.folderId, sortType, order));
+    // if (widget.isSort) {
+    //   folderTreeBloc
+    //       .add(SortListEvent(widget.folderId, widget.sortType, widget.order));
     // } else {
     folderTreeBloc.add(LoadEvent(widget.folderId));
     // }
@@ -60,11 +60,11 @@ class _FolderScreenState extends State<FolderScreen> {
         },
         child: BlocListener<FolderTreeBloc, FolderTreeState>(
           listener: (context, state) {
-            if (state is FolderTreeLoading) {
-              print("loading");
-            } else if (state is FolderTreeLoaded) {
-              print("loaded");
-            }
+            // if (state is FolderTreeLoading) {
+            //   print("loading");
+            // } else if (state is FolderTreeLoaded) {
+            //   print("loaded");
+            // }
           },
           child: BlocBuilder<FolderTreeBloc, FolderTreeState>(
             builder: (context, state) {

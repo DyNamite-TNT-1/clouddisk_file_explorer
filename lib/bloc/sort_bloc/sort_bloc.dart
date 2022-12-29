@@ -1,6 +1,5 @@
 // ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
-import 'package:clouddisk_login_form/global_variable/global_variable.dart';
 import 'package:equatable/equatable.dart';
 
 part 'sort_event.dart';
@@ -12,7 +11,6 @@ class SortBloc extends Bloc<SortEvent, SortState> {
     on<SortEvent>((event, emit) {
       if (event is ClickedSortEvent) {
         if (!isClosed) {
-          isSort = true;
           emit(SortClicked(event.sortType, event.order));
         }
       }
