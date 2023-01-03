@@ -20,4 +20,14 @@ class UserPreferences {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString("hmail_key") ?? "";
   }
+
+  Future<void> setSaved(bool saved) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString("saved", saved.toString());
+  }
+
+  Future<String> getSaved(bool saved) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getString("saved") ?? "";
+  }
 }
